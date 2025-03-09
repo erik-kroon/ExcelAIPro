@@ -1,0 +1,24 @@
+{
+  "name": "excelaipro",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "packageManager": "bun@1.2.4",
+  "scripts": {
+    "clean": "rm -rf node_modules bun.lock || true && bun i",
+    "dev": "bun --filter '*' dev",
+    "db:migrate": "bun --filter @excelaipro/db migrate",
+    "db:push": "bun --filter @excelaipro/db push",
+    "db:studio": "bun --filter @excelaipro/db studio",
+    "db:pull": "bun --filter @excelaipro/db introspect",
+    "dev:api": "bun --cwd packages/api dev",
+    "dev:web": "bun --cwd packages/web dev",
+    "build:web": "bun --cwd packages/web build",
+    "docker:api": "docker build -f Dockerfile.api -t excelaipro-api .",
+    "docker:web": "docker build -f Dockerfile.web -t excelaipro-web .",
+    "docker:api:run": "docker run -p 3000:3000 excelaipro-api",
+    "docker:web:run": "docker run -p 5173:5173 excelaipro-web",
+    "commit": "git add . && git commit -m \"stuff\" && git push"
+  }
+}
