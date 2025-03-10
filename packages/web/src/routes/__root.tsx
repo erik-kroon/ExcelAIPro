@@ -1,12 +1,7 @@
-import * as React from "react";
-import {
-  Link,
-  Outlet,
-  createRootRouteWithContext,
-} from "@tanstack/react-router";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Navbar } from "@/components/Navbar";
+import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { api } from "@/lib/hono";
 import type { sessionStore } from "@/lib/store";
@@ -28,7 +23,6 @@ function RootComponent() {
         <Navbar />
         <Outlet />
         <Footer />
-
         <TanStackRouterDevtools position="bottom-right" />
       </ThemeProvider>
     </QueryClientProvider>

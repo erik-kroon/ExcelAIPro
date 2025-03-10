@@ -4,7 +4,6 @@
   "workspaces": [
     "packages/*"
   ],
-  "packageManager": "bun@1.2.4",
   "scripts": {
     "clean": "rm -rf node_modules bun.lock || true && bun i",
     "dev": "bun --filter '*' dev",
@@ -20,5 +19,6 @@
     "docker:api:run": "docker run -p 3000:3000 excelaipro-api",
     "docker:web:run": "docker run -p 5173:5173 excelaipro-web",
     "commit": "git add . && git commit -m \"stuff\" && git push"
-  }
+  },
+  "packageManager": "bun@1.2.4"
 }

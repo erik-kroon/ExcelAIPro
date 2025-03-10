@@ -41,7 +41,7 @@ export function ChatUI() {
     handleInputChange,
     handleSubmit: originalHandleSubmit,
     status,
-  } = useChat({ api: "http://localhost:3000/api/ai/chat" });
+  } = useChat({ api: "http://localhost:3000/api/chat" });
 
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
