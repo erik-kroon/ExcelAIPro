@@ -1,254 +1,229 @@
 import type React from "react";
-import { useState, useRef, useEffect } from "react";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { Card, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Send, Bot, User, Sparkles, Sun, Moon } from "lucide-react";
+import { Send, User, X, Paperclip, FileText } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
-import { api } from "@/lib/hono";
+import { CodeBlock } from "@/components/code-block";
+import { useChat } from "@ai-sdk/react";
+import { FileUploader } from "react-drag-drop-files";
 
-type Message = {
-  role: "user" | "assistant";
-  content: string;
-  timestamp: string;
-};
+const fileTypes = ["XLSX", "CSV"];
 
-export default function ChatUI() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+interface Attachment {
+  name: string;
+  contentType: string;
+  url: string;
+}
+
+const fileToDataUrl = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+
+export function ChatUI() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dropZoneRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const {
+    messages,
+    input,
+    setInput,
+    handleInputChange,
+    handleSubmit: originalHandleSubmit,
+    status,
+  } = useChat({ api: "http://localhost:3000/api/ai/chat" });
+
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploadEnabled, setIsUploadEnabled] = useState(false);
+
+  useLayoutEffect(() => {
+    if (scrollAreaRef.current && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  };
+  const isChatLoading = status === "submitted" || status === "streaming";
 
-  const formatTime = () => {
-    const now = new Date();
-    return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
+  const handleFileChange = (file: File) => {
+    if (
+      file.name.toLowerCase().endsWith(".xlsx") ||
+      file.name.toLowerCase().endsWith(".csv")
+    ) {
+      setAttachedFile(file);
+    } else {
+      alert("Only .xlsx and .csv files are allowed.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    console.log("Submitting message:", input);
 
-    setIsLoading(true);
-    setError(null);
-
-    // Add user message
-    const userMessage: Message = {
-      role: "user",
-      content: input,
-      timestamp: formatTime(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-
-    try {
-      // Using the user's API call pattern
-      const response = await api.ai.chat.$post({ json: { message: input } });
-      if (!response.body) throw new Error("No response body");
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let aiMessage = "";
-
-      // Add an empty assistant message that will be updated
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "",
-          timestamp: formatTime(),
-        },
-      ]);
-
-      // Stream the response
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        aiMessage += chunk;
-
-        // Update the last message with the new content
-        setMessages((prev) => {
-          const newMessages = [...prev];
-          newMessages[newMessages.length - 1].content = aiMessage;
-          return newMessages;
-        });
+    let attachments: Attachment[] = [];
+    if (attachedFile) {
+      try {
+        const dataUrl = await fileToDataUrl(attachedFile);
+        attachments = [
+          {
+            name: attachedFile.name,
+            contentType: attachedFile.type,
+            url: dataUrl,
+          },
+        ];
+      } catch (error) {
+        console.error("Error converting file to data URL:", error);
       }
-    } catch (err: any) {
-      setError(err.message || "An error occurred.");
-      console.error("Chat submission error:", err);
-    } finally {
-      setIsLoading(false);
     }
+
+    originalHandleSubmit(e, { experimental_attachments: attachments });
+    setAttachedFile(null);
+  };
+
+  const handlePaperclipClick = () => {
+    setIsUploadEnabled(true);
+    dropZoneRef.current?.click();
+    setTimeout(() => dropZoneRef.current?.click(), 0);
   };
 
   return (
-    <div
-      className={cn(
-        "flex items-center justify-center min-h-screen p-4 transition-colors duration-200",
-        theme === "dark" ? "dark bg-gray-900" : "bg-gray-50",
-      )}
-    >
-      <Card className="w-full max-w-3xl h-[80vh] flex flex-col shadow-lg border-0 overflow-hidden">
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-6">
-            {messages.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-[50vh] text-center space-y-4 text-muted-foreground">
-                <Sparkles className="h-12 w-12 text-primary/50" />
-                <div>
-                  <p className="text-lg font-medium">
-                    How can I help you today?
-                  </p>
-                  <p className="text-sm">
-                    Ask me anything and I'll do my best to assist you.
-                  </p>
-                </div>
-              </div>
+    <div className="flex items-center justify-center min-h-screen transition-colors duration-200">
+      <Card className="pt-20 w-full min-h-screen max-w-3xl flex flex-col border-0 shadow-none overflow-hidden">
+        <FileUploader
+          handleChange={handleFileChange}
+          name="file"
+          types={fileTypes}
+          disabled={!isUploadEnabled}
+          hoverTitle="Drop here"
+          onDraggingStateChange={(dragging: boolean) => {
+            setIsDragging(dragging);
+            if (dragging) setIsUploadEnabled(true);
+            if (!dragging && attachedFile) setIsUploadEnabled(false);
+          }}
+          classes="flex-1"
+        >
+          <div
+            ref={dropZoneRef}
+            className={cn(
+              "flex-1 flex flex-col",
+              isDragging && "bg-gray-100/50",
             )}
-
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "flex gap-3 items-start",
-                  message.role === "user" ? "justify-end" : "justify-start",
-                )}
-              >
-                {message.role === "assistant" && (
-                  <Avatar>
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      AI
-                    </AvatarFallback>
-                    <AvatarImage src="/placeholder.svg?height=40&width=40" />
-                  </Avatar>
-                )}
-
-                <div
-                  className={cn(
-                    "flex flex-col max-w-[80%]",
-                    message.role === "user" ? "items-end" : "items-start",
-                  )}
-                >
+          >
+            <ScrollArea
+              ref={scrollAreaRef}
+              className="flex-1 h-full overflow-y-auto"
+            >
+              <div className="space-y-6">
+                {messages.map((message, index) => (
                   <div
+                    key={index}
                     className={cn(
-                      "rounded-2xl px-4 py-3",
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground rounded-tr-none"
-                        : "bg-muted rounded-tl-none dark:bg-gray-800",
+                      "flex gap-3 items-start",
+                      message.role === "user" ? "justify-end" : "justify-start",
                     )}
                   >
-                    {message.role === "assistant" ? (
-                      <span className="prose dark:prose-invert prose-sm max-w-none">
-                        <ReactMarkdown>{message.content}</ReactMarkdown>
-                      </span>
-                    ) : (
-                      <p>{message.content}</p>
+                    {message.role === "assistant" && (
+                      <Avatar>
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          AI
+                        </AvatarFallback>
+                        <AvatarImage src="/placeholder.svg?height=40&width=40" />
+                      </Avatar>
+                    )}
+                    <div
+                      className={cn(
+                        "flex flex-col max-w-[80%]",
+                        message.role === "user" ? "items-end" : "items-start",
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "rounded-2xl px-4 py-3",
+                          message.role === "user"
+                            ? "bg-primary text-primary-foreground rounded-tr-none"
+                            : "bg-gray-200/60 rounded-tl-none dark:bg-gray-800",
+                        )}
+                      >
+                        {message.role === "assistant" ? (
+                          <ReactMarkdown components={{ code: CodeBlock }}>
+                            {message.content}
+                          </ReactMarkdown>
+                        ) : (
+                          <p>{message.content}</p>
+                        )}
+                      </div>
+                    </div>
+                    {message.role === "user" && (
+                      <Avatar>
+                        <AvatarFallback className="bg-secondary text-secondary-foreground">
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                        <AvatarImage src="/placeholder.svg?height=40&width=40" />
+                      </Avatar>
                     )}
                   </div>
-                  <span className="text-xs text-muted-foreground mt-1 px-2">
-                    {message.timestamp}
-                  </span>
-                </div>
-
-                {message.role === "user" && (
-                  <Avatar>
-                    <AvatarFallback className="bg-secondary text-secondary-foreground">
-                      <User className="h-4 w-4" />
-                    </AvatarFallback>
-                    <AvatarImage src="/placeholder.svg?height=40&width=40" />
-                  </Avatar>
-                )}
+                ))}
+                <div ref={messagesEndRef} />
               </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex gap-3 items-start">
-                <Avatar>
-                  <AvatarFallback className="bg-primary/10 text-primary">
-                    AI
-                  </AvatarFallback>
-                  <AvatarImage src="/placeholder.svg?height=40&width=40" />
-                </Avatar>
-                <div className="flex flex-col max-w-[80%]">
-                  <div className="rounded-2xl px-4 py-3 bg-muted rounded-tl-none dark:bg-gray-800">
-                    <div className="flex space-x-2">
-                      <div
-                        className="w-2 h-2 rounded-full bg-primary/40 animate-bounce"
-                        style={{ animationDelay: "0ms" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 rounded-full bg-primary/40 animate-bounce"
-                        style={{ animationDelay: "150ms" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 rounded-full bg-primary/40 animate-bounce"
-                        style={{ animationDelay: "300ms" }}
-                      ></div>
-                    </div>
-                  </div>
-                  <span className="text-xs text-muted-foreground mt-1 px-2">
-                    Typing...
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {error && (
-              <div className="p-4 rounded-lg bg-destructive/10 text-destructive text-sm">
-                <p>Error: {error}</p>
-                <p className="mt-1">Please try again or refresh the page.</p>
-              </div>
-            )}
-
-            <div ref={messagesEndRef} />
+            </ScrollArea>
           </div>
-        </ScrollArea>
+        </FileUploader>
 
-        <Separator />
-
-        <CardFooter className="p-4">
-          <form onSubmit={handleSubmit} className="flex w-full gap-2">
+        <CardFooter className="flex-shrink-0 pb-4 flex-col items-start">
+          {attachedFile && (
+            <div className="px-3 py-1 bg-gray-100 flex items-center justify-between rounded-xl mb-2">
+              <div className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-green-400" />
+                <span className="text-xs">{attachedFile.name}</span>
+              </div>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                onClick={() => setAttachedFile(null)}
+              >
+                <X className="h-2 w-2" />
+              </Button>
+            </div>
+          )}
+          <form
+            onSubmit={handleSubmit}
+            className="flex w-full gap-4 items-center"
+          >
+            <Button
+              type="button"
+              size="icon"
+              onClick={handlePaperclipClick}
+              className="rounded-full h-10 w-10 shrink-0"
+            >
+              <Paperclip className="h-4 w-4" />
+            </Button>
             <Input
               ref={inputRef}
               value={input}
               onChange={handleInputChange}
               placeholder="Type your message..."
-              className="flex-1 border-0 shadow-sm focus-visible:ring-1"
-              disabled={isLoading}
+              className="flex-1 border-1 text-start h-14 shadow-none"
+              disabled={isChatLoading}
             />
             <Button
               type="submit"
               size="icon"
-              disabled={isLoading || !input.trim()}
+              disabled={isChatLoading || !input.trim()}
               className="rounded-full h-10 w-10 shrink-0"
             >
               <Send className="h-4 w-4" />
