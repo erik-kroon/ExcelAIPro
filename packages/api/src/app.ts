@@ -8,8 +8,8 @@ import { cors } from "hono/cors";
 import { SYSTEM_PROMPT } from "./lib/prompt";
 
 export type Variables = {
-  user: typeof auth.$Infer.Session.user;
-  session: typeof auth.$Infer.Session.session;
+  user: typeof auth.$Infer.Session.user | null;
+  session: typeof auth.$Infer.Session.session | null;
   db: typeof db;
 };
 
@@ -30,10 +30,7 @@ app.use(
 app.use("*", logger());
 
 app.use("*", async (c, next) => {
-  if (
-    c.req.url.includes("/api/auth/sign-in/email") ||
-    c.req.url.includes("/api/auth/get-session")
-  ) {
+  if (c.req.url.includes("/api/auth/-in/*")) {
     await next();
     return;
   }
@@ -41,8 +38,8 @@ app.use("*", async (c, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
   if (!session) return c.body("Unauthorized", 401);
 
-  c.set("user", session?.user);
-  c.set("session", session?.session);
+  c.set("user", session?.user ?? null);
+  c.set("session", session?.session ?? null);
   c.set("db", db);
   await next();
 });
