@@ -8,7 +8,6 @@ import {
   account,
 } from "@excelaipro/db/drizzle/schema";
 import { config } from "./config";
-import { stripe } from "@better-auth/stripe";
 // import Stripe from "stripe";
 // const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
