@@ -16,9 +16,9 @@
     "pull": "drizzle-kit introspect"
   },
   "type": "module",
-  "dependencies": {
-    "drizzle-kit": "^0.30.5",
-    "drizzle-orm": "^0.40.0",
-    "pg": "^8.13.3"
-  }
+  // "dependencies": {
+  //   "drizzle-kit": "^0.30.5",
+  //   "drizzle-orm": "^0.40.0",
+  //   "pg": "^8.13.3"
+  // }
 }
