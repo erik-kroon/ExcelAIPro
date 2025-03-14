@@ -42,7 +42,6 @@ export function SignUpForm({
     const { error } = await authClient.signUp.email({
       email: email,
       password: password,
-      // callbackURL: "/chat", // Adjust as needed
       name: email,
     });
     if (error) setError(error.message || "An error occurred during sign-up.");
