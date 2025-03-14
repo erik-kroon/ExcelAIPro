@@ -2,9 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { type ComponentProps } from "react";
 import authClient from "~/lib/auth-client";
 import { Button } from "~/lib/components/ui/button";
-import { cn } from "~/lib/utils";
-
-const REDIRECT_URL = "/dashboard";
+import { cn, REDIRECT_URL } from "~/lib/utils";
 
 export const Route = createFileRoute("/signin")({
   component: AuthPage,

@@ -71,10 +71,7 @@ export function ChatUI() {
   const [isDragging, setIsDragging] = useState(false);
   const isChatLoading = status === "submitted" || status === "streaming";
   const MAX_FILES = 3;
-  useEffect(() => {
-    console.log("import.meta.env:", import.meta.env);
-    console.log("process.env:", process.env);
-  }, []);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);

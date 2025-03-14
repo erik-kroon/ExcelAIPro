@@ -11,8 +11,7 @@ import {
   CardTitle,
 } from "~/lib/components/ui/card";
 import { Input } from "~/lib/components/ui/input";
-import { cn } from "~/lib/utils";
-const REDIRECT_URL = "/dashboard";
+import { cn, REDIRECT_URL } from "~/lib/utils";
 
 export const Route = createFileRoute("/signup")({
   component: SignUpForm,
