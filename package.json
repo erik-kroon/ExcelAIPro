@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "find . -name 'node_modules' -type d -exec rm -rf {} + && find . -name 'bun.lock' -type f -exec rm -rf {} + && bun i",
-    "dev": "bun --filter '*' dev",
+    "dev": "bun --cwd apps/ssr dev",
     "db:migrate": "bun --filter @excelaipro/db migrate",
     "db:push": "bun --filter @excelaipro/db push",
     "db:studio": "bun --filter @excelaipro/db studio",

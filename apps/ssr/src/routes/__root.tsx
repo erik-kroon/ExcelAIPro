@@ -3,7 +3,6 @@ import {
   createRootRouteWithContext,
   HeadContent,
   Outlet,
-  ScriptOnce,
   Scripts,
 } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
@@ -30,7 +29,7 @@ const getUser = createServerFn({ method: "GET" }).handler(async () => {
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
-
+  theme: string;
   user: Awaited<ReturnType<typeof getUser>>;
 }>()({
   beforeLoad: async ({ context }) => {
@@ -110,26 +109,51 @@ export const Navbar = () => {
 function RootComponent() {
   return (
     <RootDocument>
+      {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
       <Navbar />
       <Outlet />
+      {/* </ThemeProvider> */}
     </RootDocument>
   );
 }
-
 function RootDocument({ children }: { readonly children: React.ReactNode }) {
+  // React.useEffect(() => {
+  //   setIsClient(true);
+  // }, []);
+
+  React.useEffect(() => {
+    // if (isClient) {
+    if (localStorage.theme === "light") {
+      document.documentElement.classList.remove("dark");
+    } else if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    }
+    // }
+  }, []);
   return (
-    // suppress since we're updating the "dark" class in a custom script below
-    <html suppressHydrationWarning>
+    // suppress since we're updating the "dark" class in a custom script below suppressHydrationWarning
+    <html className="dark">
       <head>
         <HeadContent />
       </head>
       <body>
-        <ScriptOnce>
-          {`document.documentElement.classList.toggle(
-            'dark',
-            localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-            )`}
-        </ScriptOnce>
+        {/* <ScriptOnce>
+          {`
+            if (localStorage.theme === 'light') {
+              document.documentElement.classList.remove('dark')
+            } else if (
+              localStorage.theme === 'dark' ||
+              (!('theme' in localStorage) &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ) {
+              document.documentElement.classList.add('dark')
+            }
+          `}
+        </ScriptOnce> */}
         <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
         {children}

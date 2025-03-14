@@ -1,5 +1,5 @@
 {
-  "name": "excelaipro",
+  "name": "@excelaipro/ssr",
   "private": true,
   "type": "module",
   "scripts": {
