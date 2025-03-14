@@ -13,7 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as UnauthedImport } from './routes/_unauthed'
 import { Route as AuthedImport } from './routes/_authed'
-import { Route as UnauthedIndexImport } from './routes/_unauthed/index'
+import { Route as IndexImport } from './routes/index'
 import { Route as UnauthedSignupImport } from './routes/_unauthed/signup'
 import { Route as UnauthedLoginImport } from './routes/_unauthed/login'
 import { Route as AuthedChatImport } from './routes/_authed/chat'
@@ -30,10 +30,10 @@ const AuthedRoute = AuthedImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const UnauthedIndexRoute = UnauthedIndexImport.update({
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => UnauthedRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const UnauthedSignupRoute = UnauthedSignupImport.update({
@@ -58,6 +58,13 @@ const AuthedChatRoute = AuthedChatImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
     '/_authed': {
       id: '/_authed'
       path: ''
@@ -93,13 +100,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthedSignupImport
       parentRoute: typeof UnauthedImport
     }
-    '/_unauthed/': {
-      id: '/_unauthed/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof UnauthedIndexImport
-      parentRoute: typeof UnauthedImport
-    }
   }
 }
 
@@ -119,13 +119,11 @@ const AuthedRouteWithChildren =
 interface UnauthedRouteChildren {
   UnauthedLoginRoute: typeof UnauthedLoginRoute
   UnauthedSignupRoute: typeof UnauthedSignupRoute
-  UnauthedIndexRoute: typeof UnauthedIndexRoute
 }
 
 const UnauthedRouteChildren: UnauthedRouteChildren = {
   UnauthedLoginRoute: UnauthedLoginRoute,
   UnauthedSignupRoute: UnauthedSignupRoute,
-  UnauthedIndexRoute: UnauthedIndexRoute,
 }
 
 const UnauthedRouteWithChildren = UnauthedRoute._addFileChildren(
@@ -133,53 +131,55 @@ const UnauthedRouteWithChildren = UnauthedRoute._addFileChildren(
 )
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '': typeof UnauthedRouteWithChildren
   '/chat': typeof AuthedChatRoute
   '/login': typeof UnauthedLoginRoute
   '/signup': typeof UnauthedSignupRoute
-  '/': typeof UnauthedIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '': typeof AuthedRouteWithChildren
+  '/': typeof IndexRoute
+  '': typeof UnauthedRouteWithChildren
   '/chat': typeof AuthedChatRoute
   '/login': typeof UnauthedLoginRoute
   '/signup': typeof UnauthedSignupRoute
-  '/': typeof UnauthedIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/': typeof IndexRoute
   '/_authed': typeof AuthedRouteWithChildren
   '/_unauthed': typeof UnauthedRouteWithChildren
   '/_authed/chat': typeof AuthedChatRoute
   '/_unauthed/login': typeof UnauthedLoginRoute
   '/_unauthed/signup': typeof UnauthedSignupRoute
-  '/_unauthed/': typeof UnauthedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/chat' | '/login' | '/signup' | '/'
+  fullPaths: '/' | '' | '/chat' | '/login' | '/signup'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/chat' | '/login' | '/signup' | '/'
+  to: '/' | '' | '/chat' | '/login' | '/signup'
   id:
     | '__root__'
+    | '/'
     | '/_authed'
     | '/_unauthed'
     | '/_authed/chat'
     | '/_unauthed/login'
     | '/_unauthed/signup'
-    | '/_unauthed/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthedRoute: typeof AuthedRouteWithChildren
   UnauthedRoute: typeof UnauthedRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthedRoute: AuthedRouteWithChildren,
   UnauthedRoute: UnauthedRouteWithChildren,
 }
@@ -194,9 +194,13 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/",
         "/_authed",
         "/_unauthed"
       ]
+    },
+    "/": {
+      "filePath": "index.tsx"
     },
     "/_authed": {
       "filePath": "_authed.tsx",
@@ -208,8 +212,7 @@ export const routeTree = rootRoute
       "filePath": "_unauthed.tsx",
       "children": [
         "/_unauthed/login",
-        "/_unauthed/signup",
-        "/_unauthed/"
+        "/_unauthed/signup"
       ]
     },
     "/_authed/chat": {
@@ -222,10 +225,6 @@ export const routeTree = rootRoute
     },
     "/_unauthed/signup": {
       "filePath": "_unauthed/signup.tsx",
-      "parent": "/_unauthed"
-    },
-    "/_unauthed/": {
-      "filePath": "_unauthed/index.tsx",
       "parent": "/_unauthed"
     }
   }

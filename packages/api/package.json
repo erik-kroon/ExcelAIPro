@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run --hot src/app.ts"
+    // "dev": "bun run --hot src/app.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.1.20",

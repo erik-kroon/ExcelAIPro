@@ -11,6 +11,8 @@ export function CodeBlock({
   const code = String(children).replace(/\n$/, "");
   const [copied, setCopied] = useState(false);
 
+  const isExcelExpression = code.startsWith("=");
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -28,6 +30,11 @@ export function CodeBlock({
       </code>
     );
   }
+
+  if (!isExcelExpression) {
+    return null;
+  }
+
   return (
     <div className="relative my-2">
       <pre

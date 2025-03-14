@@ -1,109 +1,156 @@
-import React, { useEffect, useRef } from "react";
-import {
-  ArrowRight,
-  FileSpreadsheet,
-  BarChart,
-  Zap,
-  Users,
-  Cpu,
-} from "lucide-react";
+"use client";
+
+import { useEffect, useRef } from "react";
+import { ArrowRight, FileSpreadsheet, BarChart3 } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Link } from "@tanstack/react-router";
+import AvatarRow from "./avatar-row";
 
 const Hero = () => {
-  const statsRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const gradientRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!buttonRef.current || !gradientRef.current) return;
+
+    // Get button dimensions once
+    const width = buttonRef.current.clientWidth;
+    const height = buttonRef.current.clientHeight;
+    const perimeter = 2 * (width + height);
+
+    // Calculate segment boundaries based on perimeter
+    const s1 = width / perimeter; // Top side
+    const s2 = (width + height) / perimeter; // Right side
+    const s3 = (2 * width + height) / perimeter; // Bottom side
+
+    let start = 0;
+    const animateGradient = (timestamp: number) => {
+      if (!gradientRef.current) return;
+      if (start === 0) start = timestamp;
+
+      // Progress cycles every 3 seconds (0 to 1)
+      const progress = ((timestamp - start) % 4500) / 4500;
+
+      let x, y;
+
+      // Move along the border based on progress
+      if (progress < s1) {
+        // Top side: x from 0% to 100%, y = 0%
+        const t = progress / s1;
+        x = t * 100;
+        y = 0;
+      } else if (progress < s2) {
+        // Right side: x = 100%, y from 0% to 100%
+        const t = (progress - s1) / (s2 - s1);
+        x = 100;
+        y = t * 100;
+      } else if (progress < s3) {
+        // Bottom side: x from 100% to 0%, y = 100%
+        const t = (progress - s2) / (s3 - s2);
+        x = 100 - t * 100;
+        y = 100;
+      } else {
+        // Left side: x = 0%, y from 100% to 0%
+        const t = (progress - s3) / (1 - s3);
+        x = 0;
+        y = 100 - t * 100;
+      }
+
+      // Fixed size for the glow (adjust as needed)
+      const sizeX = 20; // 10% of width
+      const sizeY = 20; // 10% of height
+
+      // Update gradient style
+      gradientRef.current.style.background = `radial-gradient(${sizeX}% ${sizeY}% at ${x.toFixed(2)}% ${y.toFixed(2)}%, rgb(255,255,255) 0%, rgba(255,255,255,0) 100%)`;
+
+      requestAnimationFrame(animateGradient);
+    };
+
+    requestAnimationFrame(animateGradient);
+  }, []);
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col justify-center items-center pt-20 overflow-hidden">
-      {/* Decorative blurs */}
-      <div className="absolute top-1/3 -right-20 w-80 h-80 bg-excel-orange/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-excel-purple/20 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-20 z-10">
-        <div className="text-center mb-8" ref={statsRef}>
-          <div className="stats-pill">
-            <Zap className="w-4 h-4 mr-2 text-excel-orange" />
-            <span>30M+ formulas generated, so far.</span>
-          </div>
-        </div>
-
-        <h1
-          ref={titleRef}
-          className="hero-title text-4xl md:text-6xl lg:text-7xl font-bold text-center max-w-5xl mx-auto leading-tight mb-8"
-        >
-          AI-Powered Spreadsheet Automation: Formulas, Charts & Data Insights.
-        </h1>
-
-        <p
-          className="text-lg md:text-xl text-center mx-auto max-w-3xl mb-12 text-muted-foreground animate-fadeIn opacity-0"
-          style={{ animationDelay: "0.6s" }}
-        >
-          From generating complex formulas to creating charts and uncovering
-          deep insights—streamline your spreadsheets with AI.
+    <section className="relative min-h-screen w-full flex flex-col justify-center items-center bg-background text-foreground px-4 py-20">
+      {/* Stats pill */}
+      <div className="rounded-full border border-border px-4 py-1 mb-8">
+        <p className="text-center text-sm">
+          <b>1000+</b> formulas generated, so far.
         </p>
+      </div>
 
-        <div
-          className="flex flex-wrap items-center justify-center gap-4 mb-16 animate-fadeIn opacity-0"
-          style={{ animationDelay: "0.8s" }}
-        >
-          <div className="flex -space-x-2">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center overflow-hidden"
-              >
-                <Users className="w-5 h-5 text-gray-600" />
-              </div>
-            ))}
-          </div>
-          <p className="text-lg font-medium">850k+ Happy users</p>
+      {/* Main heading */}
+      <div className="max-w-4xl mx-auto text-center mb-8">
+        <h1 className="text-2xl md:text-4xl font-bold mb-4 px-1">
+          <span className="block">AI-Powered</span>
+          <span className="bg-gradient-to-r from-teal-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Spreadsheet Automation
+          </span>
+          {/* <span className="block">Formulas, Charts & Data Insights.</span> */}
+        </h1>
+      </div>
+
+      {/* Subheading */}
+      {/* <p className="text-sm md:text-xl  text-center max-w-3xl mb-16 text-muted-foreground px-2">
+        From generating complex formulas to creating charts and uncovering deep
+        insights—streamline your spreadsheets with AI.
+      </p> */}
+      <p className="text-sm md:text-xl  text-center max-w-3xl mb-16 text-muted-foreground px-2">
+        From generating complex formulas to uncovering deep insights—streamline
+        your spreadsheets with AI.
+      </p>
+
+      {/* Users and CTA */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-16">
+        <div className="flex flex-col items-center">
+          <AvatarRow />
+          <p className="text-lg mt-3">
+            <b>100+ </b>happy users
+          </p>
         </div>
 
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-20 animate-fadeIn opacity-0"
-          style={{ animationDelay: "1s" }}
+          ref={buttonRef}
+          className="relative flex border content-center bg-black/20 hover:bg-black/10 transition duration-500 dark:bg-white/20 items-center flex-col gap-10 h-min justify-center overflow-visible p-px decoration-clone w-fit rounded-full"
         >
-          <button className="rounded-full bg-black text-white px-8 py-4 font-medium flex items-center justify-center gap-2 min-w-60 hover:bg-black/90 transition-all hover:translate-y-[-2px]">
+          {/* Button content */}
+          <div className="text-white z-10 bg-black rounded-[inherit] h-14 w-fit px-10 py-0 flex items-center space-x-2 group uppercase text-lg">
             <span>Get Started</span>
-            <ArrowRight className="w-5 h-5" />
-          </button>
+            <ArrowRight className="ml-1 transition-transform duration-200 ease-in-out group-hover:translate-x-1" />
+          </div>
+          {/* Animated radial gradient background */}
+          <div
+            ref={gradientRef}
+            className="flex-none inset-0 overflow-hidden absolute z-0 rounded-[inherit]"
+            style={{ filter: "blur(2px)", width: "100%", height: "100%" }}
+          ></div>
+          {/* Solid black overlay to create the border effect */}
+          <div className="bg-black absolute z-1 inset-[2px] rounded-full"></div>
         </div>
       </div>
 
-      {/* Wavy line decoration */}
-      <div className="wavy-line w-full absolute bottom-0 left-0 right-0 z-0 overflow-hidden">
-        <svg
-          viewBox="0 0 1440 120"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0,40 C320,100 420,0 740,40 C1060,80 1380,20 1440,40 L1440,120 L0,120 Z"
-            fill="#49A3FF"
-            fillOpacity="0.2"
-          />
-        </svg>
-      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 w-full max-w-4xl">
+        <div className="bg-green-900/75 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+          <FileSpreadsheet className="w-6 h-6 mb-2" />
+          <h3 className="text-sm font-semibold">Spreadsheet Assistant</h3>
+        </div>
 
-      {/* Floating icons */}
-      <div
-        className="absolute top-1/4 right-[15%] animate-float"
-        style={{ animationDelay: "0.2s" }}
-      >
-        <FileSpreadsheet className="w-12 h-12 text-excel-green opacity-60" />
-      </div>
+        <div className="bg-secondary rounded-xl p-6 flex flex-col items-center justify-center text-center">
+          <BarChart3 className="w-6 h-6 mb-2" />
+          <h3 className="text-sm font-semibold">Data Analysis</h3>
+          <p className="text-xs text-muted-foreground">Coming soon...</p>
+        </div>
 
-      <div
-        className="absolute bottom-1/3 left-[15%] animate-float"
-        style={{ animationDelay: "0.7s" }}
-      >
-        <BarChart className="w-10 h-10 text-excel-blue opacity-60" />
-      </div>
+        <div className="bg-secondary rounded-xl p-6 flex flex-col items-center justify-center text-center">
+          <BarChart3 className="w-6 h-6 mb-2" />
+          <h3 className="text-sm font-semibold">Charts & Graphs</h3>
+          <p className="text-xs text-muted-foreground">Coming soon...</p>
+        </div>
 
-      <div
-        className="absolute top-2/3 right-[22%] animate-float"
-        style={{ animationDelay: "1.2s" }}
-      >
-        <Cpu className="w-8 h-8 text-excel-purple opacity-60" />
+        <div className="bg-secondary rounded-xl p-6 flex flex-col items-center justify-center text-center">
+          <FileSpreadsheet className="w-6 h-6 mb-2" />
+          <h3 className="text-sm font-semibold">Reports</h3>
+          <p className="text-xs text-muted-foreground">Coming soon...</p>
+        </div>
       </div>
     </section>
   );

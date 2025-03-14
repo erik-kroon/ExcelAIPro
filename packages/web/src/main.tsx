@@ -18,6 +18,7 @@ const router = createRouter({
     api: api,
     sessionStore: sessionStore,
   },
+  scrollRestoration: true,
   defaultNotFoundComponent: () => NotFound(),
 });
 

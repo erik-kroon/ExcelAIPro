@@ -30,13 +30,13 @@ app.use(
 app.use("*", logger());
 
 app.use("*", async (c, next) => {
-  if (c.req.url.includes("/api/auth/-in/*")) {
-    await next();
-    return;
-  }
+  // if (c.req.url.includes("/api/auth/")) {
+  //   await next();
+  //   return;
+  // }
 
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  if (!session) return c.body("Unauthorized", 401);
+  // if (!session) return c.body("Unauthorized", 401);
 
   c.set("user", session?.user ?? null);
   c.set("session", session?.session ?? null);
@@ -46,8 +46,8 @@ app.use("*", async (c, next) => {
 
 const routes = app
   .post("/chat", async (c) => {
-    const body = await c.req.json();
-    console.log(body?.messages?.[0]?.experimental_attachments);
+    // const body = await c.req.json();
+    // console.log(body?.messages?.[0]?.experimental_attachments);
     const { messages } = await c.req.json();
 
     const result = streamText({

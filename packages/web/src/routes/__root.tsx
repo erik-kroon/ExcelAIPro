@@ -7,6 +7,7 @@ import { api } from "@/lib/hono";
 import type { sessionStore } from "@/lib/store";
 import { qc } from "@/main";
 import { Footer } from "@/components/footer";
+import { auth } from "@/lib/auth";
 
 export const Route = createRootRouteWithContext<{
   api: typeof api;
@@ -14,14 +15,21 @@ export const Route = createRootRouteWithContext<{
   sessionStore: typeof sessionStore;
 }>()({
   component: RootComponent,
+  // loader: async () => {
+  //   const { data } = await auth.getSession();
+
+  //   return { session: data?.session, user: data?.user };
+  // },
 });
 
 function RootComponent() {
   return (
     <QueryClientProvider client={qc}>
-      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Navbar />
         <Outlet />
+        {/* {path === "/" ? <Hero /> : <Outlet />} */}
+
         <Footer />
         <TanStackRouterDevtools position="bottom-right" />
       </ThemeProvider>

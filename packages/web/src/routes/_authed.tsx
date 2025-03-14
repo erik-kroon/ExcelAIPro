@@ -3,7 +3,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authed")({
   component: RouteComponent,
-  loader: async ({ context: { qc } }) => {
+  loader: async () => {
     const { data } = await auth.getSession();
 
     if (!data) {
