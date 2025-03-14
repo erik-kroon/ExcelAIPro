@@ -130,6 +130,7 @@ function RootDocument({ children }: { readonly children: React.ReactNode }) {
             localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
             )`}
         </ScriptOnce>
+        <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
         {children}
         {process.env.NODE_ENV !== "production" && (

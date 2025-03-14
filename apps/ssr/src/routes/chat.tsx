@@ -1,11 +1,10 @@
 import { useChat } from "@ai-sdk/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { FileText, Paperclip, Send, User, X } from "lucide-react";
+import { FileSpreadsheet, FileText, Paperclip, Send, User, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import * as XLSX from "xlsx";
 import { Markdown } from "~/lib/components/markdown";
 import { Avatar, AvatarFallback, AvatarImage } from "~/lib/components/ui/avatar";
 import { Button } from "~/lib/components/ui/button";
@@ -67,10 +66,9 @@ export function ChatUI() {
     handleInputChange,
     handleSubmit: originalHandleSubmit,
     status,
-  } = useChat({ api: "http://localhost:3000/api/chat/$" });
+  } = useChat({ api: `${import.meta.env.VITE_BASE_URL}/api/chat/$` });
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-
   const isChatLoading = status === "submitted" || status === "streaming";
   const MAX_FILES = 3;
 
@@ -185,7 +183,10 @@ export function ChatUI() {
     }
 
     // Submit to the API with the processed attachments
-    originalHandleSubmit(e, { experimental_attachments: attachments });
+    originalHandleSubmit(e, {
+      allowEmptySubmit: true,
+      experimental_attachments: attachments,
+    });
     setAttachedFiles([]);
     inputRef.current?.focus();
   };
@@ -248,11 +249,8 @@ export function ChatUI() {
                   transition={{ delay: index * 0.05 }}
                 >
                   {message.role === "assistant" && (
-                    <Avatar>
-                      <AvatarFallback className="bg-primary/10 text-primary">
-                        AI
-                      </AvatarFallback>
-                      <AvatarImage src="/placeholder.svg?height=40&width=40" />
+                    <Avatar className="bg-muted rounded-full flex justify-center items-center p-1.5">
+                      <FileSpreadsheet className="text-green-400" />
                     </Avatar>
                   )}
                   <div
@@ -272,14 +270,32 @@ export function ChatUI() {
                       <div className="flex flex-col gap-4">
                         <Markdown>{message.content}</Markdown>
                       </div>
-                      {message.experimental_attachments?.map((attachment) => (
-                        <div key={attachment.name} className="mt-4">
-                          <div className="flex items-center gap-2">
-                            <FileText className="h-4 w-4 text-green-400" />
-                            <span className="text-xs">{attachment.name}</span>
+                      {message.experimental_attachments?.map((attachment) => {
+                        console.log(message);
+                        const isXlsxCsv = attachment?.name
+                          ?.toLowerCase()
+                          .endsWith("-xlsx.csv");
+                        const fileName = isXlsxCsv
+                          ? attachment?.name?.replace(/-xlsx\.csv$/i, ".xlsx")
+                          : attachment.name;
+                        const fileIconColor = isXlsxCsv
+                          ? "text-green-400"
+                          : "text-blue-400";
+                        return (
+                          <div
+                            key={attachment.name}
+                            className={cn(
+                              "mt-4",
+                              message.content.trim() === "" ? "mt-0" : "",
+                            )}
+                          >
+                            <div className="flex items-center gap-2">
+                              <FileText className={`h-4 w-4 ${fileIconColor}`} />
+                              <span className="text-xs">{fileName}</span>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                   {message.role === "user" && (
