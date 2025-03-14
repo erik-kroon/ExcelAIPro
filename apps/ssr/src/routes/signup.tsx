@@ -1,5 +1,5 @@
 import { Label } from "@radix-ui/react-label";
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import authClient from "~/lib/auth-client";
 import { Button } from "~/lib/components/ui/button";
@@ -32,6 +32,7 @@ export function SignUpForm({
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +44,12 @@ export function SignUpForm({
       password: password,
       name: email,
     });
+
     if (error) setError(error.message || "An error occurred during sign-up.");
+
+    navigate({
+      to: "/login",
+    });
   };
 
   return (
