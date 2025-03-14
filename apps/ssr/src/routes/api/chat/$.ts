@@ -2,6 +2,7 @@ import { google } from "@ai-sdk/google";
 import { json } from "@tanstack/react-start";
 import { createAPIFileRoute } from "@tanstack/react-start/api";
 import { convertToCoreMessages, streamText } from "ai";
+import { calculatorTools } from "~/lib/tools/math";
 import { SYSTEM_PROMPT } from "~/lib/utils";
 export const APIRoute = createAPIFileRoute("/api/chat/$")({
   POST: async ({ request }) => {
@@ -10,6 +11,11 @@ export const APIRoute = createAPIFileRoute("/api/chat/$")({
       const attachments = messages[0]?.experimental_attachments;
       console.log(attachments);
       const result = streamText({
+        maxSteps: 10,
+
+        tools: {
+          ...calculatorTools(),
+        },
         model: google("gemini-2.0-flash-exp"),
         system: SYSTEM_PROMPT,
         onError: (error) => console.log(error),
