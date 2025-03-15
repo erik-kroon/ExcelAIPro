@@ -90,7 +90,7 @@ export function Pricing() {
               <Link className="w-full " to="/login">
                 <Button
                   variant="outline"
-                  className="w-full text-md  px-2 py-4 hover:bg-muted cursor-pointer"
+                  className="w-full text-md  text-black dark:text-white px-2 py-4 hover:bg-muted cursor-pointer"
                 >
                   Get started!
                   <span className="ml-1 text-lg">→</span>

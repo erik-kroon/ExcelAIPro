@@ -1,26 +1,53 @@
 import { google } from "@ai-sdk/google";
 import { json } from "@tanstack/react-start";
 import { createAPIFileRoute } from "@tanstack/react-start/api";
-import { convertToCoreMessages, streamText } from "ai";
+import { convertToCoreMessages, generateId, Message, streamText } from "ai";
+import { SYSTEM_PROMPT } from "~/lib/prompt";
+import { analysisTools } from "~/lib/tools/analysis";
+import { coreTools } from "~/lib/tools/core";
+import { exportTools } from "~/lib/tools/export";
 import { calculatorTools } from "~/lib/tools/math";
-import { SYSTEM_PROMPT } from "~/lib/utils";
+import { transformationTools } from "~/lib/tools/transformation";
+
 export const APIRoute = createAPIFileRoute("/api/chat/$")({
   POST: async ({ request }) => {
     try {
-      const { messages } = await request.json();
-      const attachments = messages[0]?.experimental_attachments;
-      console.log(attachments);
+      const body = await request.json();
+      const schema = body?.schema;
+      const messages: Message[] = body.messages;
+
+      messages.push({
+        id: generateId(),
+        role: "data",
+        content: JSON.stringify(schema, null, 2),
+        parts: [{ type: "text", text: JSON.stringify(schema, null, 2) }],
+      });
+
+      // console.log(messages);
+
+      // {
+      //   console.dir(body, { depth: null });
+      // }
+
       const result = streamText({
-        maxSteps: 10,
+        maxSteps: 25,
 
         tools: {
           ...calculatorTools(),
+          ...coreTools(),
+          ...exportTools(),
+          ...transformationTools(),
+          ...analysisTools(),
         },
+
         model: google("gemini-2.0-flash-exp"),
         system: SYSTEM_PROMPT,
+
         onError: (error) => console.log(error),
         messages: convertToCoreMessages(messages),
       });
+
+      // console.log(result);
 
       const errorHandler = (error: unknown) => {
         if (error == null) {

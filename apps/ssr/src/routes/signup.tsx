@@ -11,14 +11,14 @@ import {
   CardTitle,
 } from "~/lib/components/ui/card";
 import { Input } from "~/lib/components/ui/input";
-import { cn, REDIRECT_URL } from "~/lib/utils";
+import { cn } from "~/lib/utils";
 
 export const Route = createFileRoute("/signup")({
   component: SignUpForm,
   beforeLoad: async ({ context }) => {
     if (context.user) {
       throw redirect({
-        to: REDIRECT_URL,
+        to: "/chat",
       });
     }
   },

@@ -8,13 +8,20 @@ export const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     code: ({ inline, className, children, ...props }: any) => {
       const match = /language-(\w+)/.exec(className || "");
       return !inline && match ? (
-        <pre
+        <CodeBlock
+          language={match}
+          className={`${className} text-sm bg-zinc-100 dark:bg-zinc-800 py-0.5 px-1 rounded`}
           {...props}
-          className={`${className} text-sm w-[80dvw] md:max-w-[500px] overflow-x-scroll bg-zinc-100 p-2 rounded mt-2 dark:bg-zinc-800`}
         >
-          <code className={match[1]}>{children}</code>
-        </pre>
+          {children}
+        </CodeBlock>
       ) : (
+        // <pre
+        //   {...props}
+        //   className={`${className} text-sm w-[80dvw] md:max-w-[500px] overflow-x-scroll bg-zinc-100 p-2 rounded mt-2 dark:bg-zinc-800`}
+        // >
+        //   <code className={match[1]}>{children}</code>
+        // </pre>
         <CodeBlock
           className={`${className} text-sm bg-zinc-100 dark:bg-zinc-800 py-0.5 px-1 rounded`}
           {...props}
@@ -25,7 +32,7 @@ export const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     },
     ol: ({ children, ...props }: any) => {
       return (
-        <ol className="list-decimal list-inside ml-4" {...props}>
+        <ol className="list-decimal list-inside ml-6 my-2" {...props}>
           {children}
         </ol>
       );

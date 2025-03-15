@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BarChart3, FileSpreadsheet } from "lucide-react";
 import { useEffect, useRef } from "react";
 import AvatarRow from "~/lib/components/avatar-row";
+import { Footer } from "~/lib/components/footer";
 import { Pricing } from "~/lib/components/pricing";
 export const Route = createFileRoute("/")({
   component: Hero,
@@ -121,7 +122,7 @@ function Hero() {
             className="relative flex border content-center bg-black/20 hover:bg-black/10 transition duration-500 dark:bg-white/20 items-center flex-col gap-10 h-min justify-center overflow-visible p-px decoration-clone w-fit rounded-full"
           >
             <div className="text-white z-100 bg-black rounded-[inherit] h-14 w-fit px-10 py-0 flex items-center space-x-2 group uppercase text-lg">
-              <span className="text-white">Get Started</span>
+              <span className="text-white ">Get Started</span>
             </div>
 
             {/* Animated radial gradient background */}
@@ -162,6 +163,7 @@ function Hero() {
       </div>
 
       <Pricing />
+      <Footer />
     </section>
   );
 }

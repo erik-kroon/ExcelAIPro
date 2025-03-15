@@ -10,11 +10,19 @@ import { cn } from "~/lib/utils";
 interface CodeBlockProps {
   inline?: boolean;
   className?: string;
+  language?: string;
   children: React.ReactNode;
   [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-export function CodeBlock({ inline, className, children, ...props }: CodeBlockProps) {
+export function CodeBlock({
+  inline,
+  className,
+  children,
+  language = "Excel",
+
+  ...props
+}: CodeBlockProps) {
   const code = String(children).replace(/\n$/, "");
   const [copied, setCopied] = useState(false);
 
@@ -53,7 +61,7 @@ export function CodeBlock({ inline, className, children, ...props }: CodeBlockPr
             variant="outline"
             className="bg-green-500/10 text-green-600 dark:text-green-400"
           >
-            Excel Formula
+            {language}
           </Badge>
           <Button
             variant="ghost"
