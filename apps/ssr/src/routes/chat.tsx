@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { Markdown } from "~/lib/components/markdown";
-import { Avatar, AvatarFallback, AvatarImage } from "~/lib/components/ui/avatar";
+import { Avatar, AvatarFallback } from "~/lib/components/ui/avatar";
 import { Button } from "~/lib/components/ui/button";
 import { Card, CardFooter } from "~/lib/components/ui/card";
 import { Input } from "~/lib/components/ui/input";
@@ -176,7 +176,7 @@ export function ChatUI() {
     }
 
     // Submit to the API with the processed attachments and schemas
-    console.log(attachmentSchemas);
+    // console.log(attachmentSchemas);
     originalHandleSubmit(e, {
       allowEmptySubmit: true,
       experimental_attachments: attachments,
@@ -297,7 +297,6 @@ export function ChatUI() {
                       <AvatarFallback className="bg-secondary text-secondary-foreground">
                         <User className="h-4 w-4" />
                       </AvatarFallback>
-                      <AvatarImage src="/placeholder.svg?height=40&width=40" />
                     </Avatar>
                   )}
                 </motion.div>
