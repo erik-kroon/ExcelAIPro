@@ -112,21 +112,14 @@ export const transformationTools = (
           return { error: `No column mapped for type "${columnType}".` };
 
         data.forEach((row) => {
-          const dateValue = row[userColumnName];
-          if (!dateValue) return; // Skip if the date value is null or undefined
-          const date = new Date(dateValue);
-
-          if (isNaN(date.getTime())) {
-            row[userColumnName] = null; // Set to null if the date is invalid
-            return;
-          }
-
+          const dateValue = new Date(row[userColumnName]);
+          if (isNaN(dateValue.getTime())) return;
           row[userColumnName] =
             part === "day"
-              ? date.getDate()
+              ? dateValue.getDate()
               : part === "month"
-                ? date.getMonth() + 1
-                : date.getFullYear();
+                ? dateValue.getMonth() + 1
+                : dateValue.getFullYear();
         });
         return { result: `Extracted ${part} from "${userColumnName}".` };
       },
@@ -149,22 +142,12 @@ export const transformationTools = (
 
         const newCol = `${col1}_to_${col2}_diff`;
         data.forEach((row) => {
-          const date1Value = row[col1];
-          const date2Value = row[col2];
-
-          if (!date1Value || !date2Value) {
-            row[newCol] = null;
-            return;
-          }
-
-          const date1 = new Date(date1Value);
-          const date2 = new Date(date2Value);
-
+          const date1 = new Date(row[col1]),
+            date2 = new Date(row[col2]);
           if (isNaN(date1.getTime()) || isNaN(date2.getTime())) {
             row[newCol] = null;
             return;
           }
-
           const diffMs = date2.getTime() - date1.getTime();
           row[newCol] =
             unit === "days"
@@ -229,57 +212,30 @@ export const transformationTools = (
       execute: async ({ groupByColumnType, aggregateColumnType, aggregation }) => {
         if (!memory || !data) return { error: "Memory or data not available." };
         const columnMappings = memory.columnMappings || {};
-        const groupCol = columnMappings[groupByColumnType];
-        const aggCol = columnMappings[aggregateColumnType];
+        const groupCol = columnMappings[groupByColumnType],
+          aggCol = columnMappings[aggregateColumnType];
         if (!groupCol || !aggCol) return { error: "One or both columns not mapped." };
 
         const pivot: Record<string, number> = {};
         data.forEach((row) => {
-          const groupValue = row[groupCol];
-          const aggValue = Number(row[aggCol]) || 0;
-
-          if (groupValue === undefined || groupValue === null) return;
-
-          if (!(groupValue in pivot)) {
-            pivot[groupValue] = aggregation === "count" ? 0 : 0;
-          }
-
-          switch (aggregation) {
-            case "sum":
-              pivot[groupValue] += aggValue;
-              break;
-            case "average":
-              pivot[groupValue] += aggValue;
-              break;
-            case "count":
-              pivot[groupValue]++;
-              break;
-          }
+          const groupValue = row[groupCol],
+            aggValue = Number(row[aggCol]) || 0;
+          if (!(groupValue in pivot)) pivot[groupValue] = aggregation === "count" ? 0 : 0;
+          pivot[groupValue] =
+            aggregation === "sum"
+              ? pivot[groupValue] + aggValue
+              : aggregation === "average"
+                ? pivot[groupValue] + aggValue
+                : pivot[groupValue] + 1;
         });
-
         if (aggregation === "average") {
           const counts: Record<string, number> = {};
           data.forEach(
             (row) => (counts[row[groupCol]] = (counts[row[groupCol]] || 0) + 1),
           );
-          for (const key in pivot) {
-            pivot[key] /= counts[key] || 1; // Avoid division by zero
-          }
+          for (const key in pivot) pivot[key] /= counts[key];
         }
-
-        const pivotTable = Object.entries(pivot).map(([key, value]) => ({
-          [groupCol]: key,
-          [aggregation]: value,
-        }));
-
-        // Clear existing data and push pivot table data
-        if (data) {
-          data.length = 0;
-          data.push(...pivotTable);
-        }
-        return {
-          result: `Created a pivot table, grouping by "${groupCol}" and aggregating "${aggCol}" using ${aggregation}.`,
-        };
+        return { result: { pivotTable: pivot } };
       },
     }),
 
@@ -296,12 +252,8 @@ export const transformationTools = (
           });
           return row;
         });
-
-        // Clear existing data and push transposed data
-        if (data) {
-          data.length = 0;
-          data.push(...transposed);
-        }
+        data.length = 0;
+        data.push(...transposed);
         return { result: "Data transposed successfully." };
       },
     }),
@@ -365,7 +317,7 @@ export const transformationTools = (
           }
         });
 
-        // Update data in place
+        // Update data in place (or return for assignment)
         if (data) {
           data.length = 0;
           data.push(...filteredData);
@@ -421,7 +373,7 @@ export const transformationTools = (
           let result;
           try {
             // Evaluate the formula based on available columns and operators
-            result = operands.reduce((acc, _, index) => {
+            result = operands.reduce((acc, operand, index) => {
               const colName = userColumnNames[index] as string; //cast to string since we confirmed no errors exist.
               const value = Number(row[colName]) || 0; // Default to 0 if not a number.
 
