@@ -17,8 +17,13 @@ export default defineConfig({
       sitemapPlugin({
         hostname: "https://www.excelaipro.com",
         defaultChangefreq: "daily",
+        routes: {
+          "/chat": {
+            changefreq: "daily",
+            priority: 0.0,
+          },
+        },
         defaultPriority: 0.7,
-
         routeTreePath: resolve(__dirname, "./src/routeTree.gen.ts"),
       }),
 

@@ -20,7 +20,6 @@ export function CodeBlock({
   className,
   children,
   language = "Excel",
-
   ...props
 }: CodeBlockProps) {
   const code = String(children).replace(/\n$/, "");

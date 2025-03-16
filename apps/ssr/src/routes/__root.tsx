@@ -97,7 +97,7 @@ function RootDocument({ children }: { readonly children: React.ReactNode }) {
   );
 }
 
-export const Navbar = () => {
+export function Navbar() {
   const { user, queryClient } = Route.useRouteContext();
 
   const navigate = useNavigate();
@@ -112,7 +112,7 @@ export const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-20 h-16 transition-all backdrop-blur-md shadow-border">
       <div className="flex items-center justify-between h-full mx-10 md:mx-20">
         <div className="text-xl flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
-          <Link to={"/"} className="flex gap-1 items-center relative font-semibold">
+          <Link to={"/"} className="flex gap-1.5 items-center relative font-semibold ">
             <FileSpreadsheet className="w-8 h-8 text-green-400" />
             <span>
               ExcelAI<span className=" text-green-400">Pro</span>
@@ -144,4 +144,4 @@ export const Navbar = () => {
       </div>
     </nav>
   );
-};
+}

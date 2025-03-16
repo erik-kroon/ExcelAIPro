@@ -53,7 +53,7 @@ export function Pricing() {
           </Tabs>
         </div> */}
 
-        <div className="pt-8  max-w-md flex md:justify-around flex-col md:flex-row gap-6 md:max-w-6xl mx-auto">
+        <div className="pt-8  max-w-xl flex md:justify-around flex-col md:flex-row gap-6 md:max-w-7xl mx-auto">
           {/* <div className="flex justify-center items-center gap-6 pt-8 "> */}
           {/* Free Plan */}
           <div className="md:pt-6">
@@ -73,11 +73,20 @@ export function Pricing() {
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
-                    <span>Spreadsheet formula generation assistant AI</span>
+                    <span>
+                      Excel formula Assistant AI
+                      <span className="ml-2.5 text-xs  font-semibold bg-purple-400/60  px-2 py-1 rounded-full">
+                        validation
+                      </span>
+                      <span className="ml-2 text-xs  font-semibold bg-sky-400/60  px-2 py-1 rounded-full">
+                        tools
+                      </span>
+                    </span>
                   </li>
+
                   <li className="flex items-start">
                     <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
-                    <span> .xlsx file parsing and encoding for AI</span>
+                    <span> .xlsx file parsing and encoding for Excel AI</span>
                   </li>
                   {/* <li className="flex items-start">
                     <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
@@ -115,11 +124,11 @@ export function Pricing() {
           {/* Pro Plan */}
           <Card className="flex justify-around md:mr-2 text-left bg-black border-1 border-muted-foreground/33 text-white relative overflow-hidden px-4">
             <CardHeader className="pb-0 pt-0 px-6">
-              <h2 className="text-3xl font-bold">Pro</h2>
+              <h2 className="text-3xl font-semibold">Pro</h2>
               <p className="text-white/60">Unlock the full potential of ExcelAIPro</p>
             </CardHeader>
             <CardContent className="">
-              <div className="text-3xl font-bold flex">
+              <div className="text-3xl font-semibold flex">
                 <div className="line-through text-muted-foreground">$10</div>
                 <div className="ml-2 pb-4">$5.99/month</div>
               </div>
@@ -128,18 +137,22 @@ export function Pricing() {
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
                   <div>
                     <span>Multi-step AI Chat, up to 500 requests per day</span>
-                    <span className="ml-2.5 text-xs font-bold bg-yellow-600/85 px-2 py-1 rounded-full">
+                    <span className="ml-2.5 text-xs font-semibold bg-amber-500/75 px-2 py-1 rounded-full">
                       supercharged
                     </span>
                   </div>
                 </li>
                 <li className="flex items-start ">
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Excel Formula Assistant AI</span>
-                </li>
-                <li className="flex items-start ">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Excel formula validation on sample rows</span>
+                  <span className="">
+                    Excel formula assistant AI
+                    <span className="ml-2.5 text-xs  font-semibold bg-purple-400/60  px-2 py-1 rounded-full">
+                      validation
+                    </span>
+                    <span className="ml-2 text-xs  font-semibold bg-sky-400/60  px-2 py-1 rounded-full">
+                      tools
+                    </span>
+                  </span>
                 </li>
 
                 <li className="flex items-start">
@@ -149,7 +162,7 @@ export function Pricing() {
                       .xlsx file parsing and encoding for Excel AI
                       {/* <span className=" text-lg">📊</span> */}
                     </span>
-                    <span className="ml-2.5 text-xs  font-bold bg-green-700/80 px-2 py-1 rounded-full">
+                    <span className="ml-2.5 text-xs  font-semibold bg-teal-300/40  px-2 py-1 rounded-full">
                       advanced
                     </span>
                   </div>
@@ -174,7 +187,7 @@ export function Pricing() {
                 <li className="flex items-start ">
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
                   <span>Priority access to customer support </span>
-                  <div className="ml-2.5 text-xs tracking-wide font-bold bg-rose-400/68 px-2 py-1 rounded-full">
+                  <div className="ml-2.5 text-xs tracking-wide font-semibold bg-rose-400/68 px-2 py-1 rounded-full">
                     ASAP
                   </div>
                 </li>
@@ -182,7 +195,7 @@ export function Pricing() {
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
                   <span>
                     Query Assistant <span className="ml-1 text-lg">✨</span>
-                    <span className="ml-2.5 text-xs  font-bold bg-blue-500/80 px-2 py-1 rounded-full">
+                    <span className="ml-2.5 text-xs  font-semibold bg-blue-500/80 px-2 py-1 rounded-full">
                       coming soon
                     </span>
                   </span>
