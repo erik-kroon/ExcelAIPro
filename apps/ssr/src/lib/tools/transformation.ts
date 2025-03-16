@@ -23,7 +23,6 @@ export type TransformationTools =
   | "filterRows"
   | "addCalculatedColumn"
   | "sortRows";
-// | "handleMissingValues";
 
 export const transformationTools = (
   config?: {
@@ -437,59 +436,6 @@ export const transformationTools = (
         return { result: `Sorted data by "${userColumnName}" in ${order} order.` };
       },
     }),
-
-    // handleMissingValues: tool({
-    //   description: "Fills missing values in a column with a specified method.",
-    //   parameters: z.object({
-    //     columnType: z.string().describe("Mapped column type"),
-    //     fillMethod: z
-    //       .enum(["mean", "median", "specificValue"])
-    //       .describe("Method for filling"),
-    //     value: z
-    //       .union([z.number(), z.string()])
-    //       .optional()
-    //       .describe('Specific value for "specificValue" method (number or string)'),
-    //   }),
-    //   execute: async ({ columnType, fillMethod, value }) => {
-    //     if (!memory || !data) return { error: "Memory or data not available." };
-    //     const columnMappings = memory.columnMappings || {};
-    //     const userColumnName = columnMappings[columnType];
-    //     if (!userColumnName)
-    //       return { error: `No column mapped for type "${columnType}".` };
-
-    //     let fillValue;
-    //     if (fillMethod === "specificValue") {
-    //       if (value === undefined) {
-    //         return {
-    //           error: 'Value must be provided when fillMethod is "specificValue".',
-    //         };
-    //       }
-    //       fillValue = value; // Can be number or string as per schema
-    //     } else {
-    //       const numbers = data
-    //         .map((row) => Number(row[userColumnName]))
-    //         .filter((v) => !isNaN(v));
-    //       if (!numbers.length) return { error: "No numeric data to compute fill value." };
-    //       fillValue =
-    //         fillMethod === "mean"
-    //           ? numbers.reduce((sum, v) => sum + v, 0) / numbers.length
-    //           : numbers.sort((a, b) => a - b)[Math.floor(numbers.length / 2)];
-    //     }
-
-    //     data.forEach((row) => {
-    //       if (
-    //         row[userColumnName] === undefined ||
-    //         row[userColumnName] === null ||
-    //         row[userColumnName] === ""
-    //       ) {
-    //         row[userColumnName] = fillValue;
-    //       }
-    //     });
-    //     return {
-    //       result: `Filled missing values in "${userColumnName}" with ${fillMethod}: ${fillValue}`,
-    //     };
-    //   },
-    // }),
   };
 
   // Exclude tools as specified in config

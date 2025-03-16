@@ -5,157 +5,197 @@ import { Card, CardContent, CardFooter, CardHeader } from "~/lib/components/ui/c
 
 export function Pricing() {
   return (
-    <div className="mt-10 flex  flex-col items-center justify-center  text-white p-0">
+    <div className="mt-16 flex  flex-col items-center justify-center  text-white p-0">
       <div className="w-full max-w-5xl mx-auto text-center space-y-4">
         <div className="space-y-4">
           <div className="text-2xl font-bold tracking-tight sm:text-3xl">
-            {/* Choose Your Plan */}
-            currently free
+            Choose your plan
           </div>
-          {/* <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-xl md:max-w-2xl mx-auto px-2">
             Select the perfect plan for your needs. Enjoy our generous free tier or unlock
             premium features with our paid plan.
-          </p> */}
+          </p>
         </div>
 
-        <div className="flex justify-center cursor-pointer">
-          {/* <Tabs defaultValue="monthly">
-            <TabsList className="text-sm gap-4 cursor-pointer border border-muted rounded-full p-1 bg-muted/80">
+        {/* <div className="flex justify-center cursor-pointer">
+          <Tabs defaultValue="monthly">
+            <TabsList
+              className=" p-1 bg-muted/90
+              text-sm gap-4 cursor-pointer
+              border border-muted rounded-full
+              dark:text-white
+              dark:bg-muted-foreground/80"
+            >
               <TabsTrigger
                 value="monthly"
-                className="cursor-pointer rounded-full px-4 py-1 data-[state=active]:bg-black data-[state=active]:text-white data-[state=inactive]:text-white/70"
+                className="cursor-pointer rounded-full px-4 py-1
+                border-0
+                data-[state=active]:bg-black
+                dark:data-[state=active]:text-primary
+                data-[state=active]:text-primary-foreground
+                data-[state=inactive]:text-muted-foreground"
               >
                 Monthly
               </TabsTrigger>
               <TabsTrigger
                 value="yearly"
-                className="cursor-pointer rounded-full px-4 py-1 data-[state=active]:bg-black data-[state=active]:text-white text-white/60 data-[state=inactive]:text-white/70"
+                className="cursor-pointer
+                border-0
+                rounded-full px-4 py-1
+                data-[state=active]:bg-black
+                dark:data-[state=active]:text-primary
+                data-[state=active]:text-primary-foreground
+                data-[state=inactive]:text-muted-foreground"
               >
                 Yearly
               </TabsTrigger>
             </TabsList>
-          </Tabs> */}
-        </div>
+          </Tabs>
+        </div> */}
 
-        {/* <div className="pt-8 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto"> */}
-        <div className="flex justify-center items-center">
+        <div className="pt-8  max-w-md flex md:justify-around flex-col md:flex-row gap-6 md:max-w-6xl mx-auto">
+          {/* <div className="flex justify-center items-center gap-6 pt-8 "> */}
           {/* Free Plan */}
-          <Card className="ml-1 text-left bg-black border-1 border-white/40 text-white scale-95 transform px-4">
-            <CardHeader className="pb-0 pt-0 px-6">
-              <h2 className="text-2xl font-bold">Free</h2>
-              <p className="text-muted-foreground">
-                Get started with essential features at no cost.
-              </p>
-            </CardHeader>
-            <CardContent className="ml-1 space-y-2 px-6 py-0">
-              <div className="text-4xl font-bold">$0</div>
-              <ul className="space-y-3 pt-2">
-                <li className="flex items-start">
-                  {/* <X className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-gray-500" /> */}
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
+          <div className="md:pt-6">
+            <Card className="flex   text-left bg-black border-1 border-bg-muted text-white scale-95 transform px-4">
+              <CardHeader className="pb-0 pt-0 px-6">
+                <h2 className="text-3xl font-bold text-white/95">Free</h2>
+                <p className="text-white/60">
+                  Get started with essential features at no cost.
+                </p>
+              </CardHeader>
+              <CardContent className="ml-1  px-6 ">
+                <div className="text-3xl font-bold text-white/95 pb-2">$0</div>
+                <ul className="space-y-3 pt-2 text-white/90">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
+                    <span>AI Chat, up to 5 requests per day</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
+                    <span>Spreadsheet formula generation assistant AI</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
+                    <span> .xlsx file parsing and encoding for AI</span>
+                  </li>
+                  {/* <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
+                    <span>VBA Script Assistant AI</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
+                    <span>SQL Query Assistant AI</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
+                    <span>Regex Assistant AI</span>
+                  </li> */}
 
-                  <span>AI Chat</span>
-                </li>
-                {/* <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Up to 4 requests per day (refreshed every 12 hours)</span>
-                </li> */}
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Spreadsheets Formula Assistant AI</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Spreadsheets Scripts for Automation Assistant AI</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>SQL Query Assistant AI</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Regex Assistant AI</span>
-                </li>
-                {/* <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Excel Table Template Generator</span>
-                </li> */}
-                <li className="flex items-start">
-                  <X className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-gray-500" />
-                  <span>Customer support</span>
-                </li>
-              </ul>
-            </CardContent>
-            <CardFooter className="px-6  pt-4">
-              <Link className="w-full " to="/login">
-                <Button
-                  variant="outline"
-                  className="w-full text-md  text-black dark:text-white px-2 py-4 hover:bg-muted cursor-pointer"
-                >
-                  Get started!
-                  <span className="ml-1 text-lg">→</span>
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
+                  <li className="flex items-start">
+                    <X className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-red-400/80 " />
+                    <span>Customer support</span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter className="px-4 pt-2 pb-1">
+                <Link className="w-full " to="/login">
+                  <Button
+                    variant="outline"
+                    className="w-full text-md  text-black dark:text-white px-2 py-5 hover:bg-muted cursor-pointer"
+                  >
+                    Get started!
+                    <span className="ml-1 text-lg">→</span>
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          </div>
 
           {/* Pro Plan */}
-          {/* <Card className="text-left bg-black border-1 border-white/40 text-white relative overflow-hidden">
-            <CardHeader className="pb-4 pt-4 px-6">
+          <Card className="flex justify-around md:mr-2 text-left bg-black border-1 border-muted-foreground/33 text-white relative overflow-hidden px-4">
+            <CardHeader className="pb-0 pt-0 px-6">
               <h2 className="text-3xl font-bold">Pro</h2>
-              <p className="text-muted-foreground">
-                Unlock full potential with More Credits and better AI Assistant.
-              </p>
+              <p className="text-white/60">Unlock the full potential of ExcelAIPro</p>
             </CardHeader>
-            <CardContent className="space-y-6 px-6">
-              <div className="text-4xl font-bold">$7.99/month</div>
+            <CardContent className="">
+              <div className="text-3xl font-bold flex">
+                <div className="line-through text-muted-foreground">$10</div>
+                <div className="ml-2 pb-4">$5.99/month</div>
+              </div>
               <ul className="space-y-3">
                 <li className="flex items-start">
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
                   <div>
-                    <span>AI Chat</span>
-                    <span className="ml-2 text-xs bg-gray-800 px-2 py-1 rounded-full">
-                      New!
+                    <span>Multi-step AI Chat, up to 500 requests per day</span>
+                    <span className="ml-2.5 text-xs font-bold bg-yellow-600/85 px-2 py-1 rounded-full">
+                      supercharged
                     </span>
                   </div>
                 </li>
-                <li className="flex items-start">
+                <li className="flex items-start ">
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Up to 1000 requests per day (30,000 per month)</span>
+                  <span>Excel Formula Assistant AI</span>
+                </li>
+                <li className="flex items-start ">
+                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
+                  <span>Excel formula validation on sample rows</span>
+                </li>
+
+                <li className="flex items-start">
+                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 " />
+                  <div>
+                    <span>
+                      .xlsx file parsing and encoding for Excel AI
+                      {/* <span className=" text-lg">📊</span> */}
+                    </span>
+                    <span className="ml-2.5 text-xs  font-bold bg-green-700/80 px-2 py-1 rounded-full">
+                      advanced
+                    </span>
+                  </div>
+                </li>
+
+                {/* <li className="flex items-start">
+                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
+                  <span>
+                    Advanced AI generation: spreadsheets scripts, VBA, Power Query for
+                    Automation AI
+                  </span>
+                </li> */}
+                {/* <li className="flex items-start">
+                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
+                  <span>Advanced SQL Query AI assistant</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Spreadsheets Formula Assistant AI</span>
-                </li>
-                <li className="flex items-start">
+                  <span>Regex expression generation assistant AI</span>
+                </li> */}
+
+                <li className="flex items-start ">
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Spreadsheets Scripts for Automation Assistant AI</span>
+                  <span>Priority access to customer support </span>
+                  <div className="ml-2.5 text-xs tracking-wide font-bold bg-rose-400/68 px-2 py-1 rounded-full">
+                    ASAP
+                  </div>
                 </li>
-                <li className="flex items-start">
+                <li className="flex items-center ">
                   <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>SQL Query Assistant AI</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Regex Assistant AI</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Excel Table Template Generator</span>
-                </li>
-                <li className="flex items-start">
-                  <Check className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0 text-white" />
-                  <span>Priority access to customer support</span>
+                  <span>
+                    Query Assistant <span className="ml-1 text-lg">✨</span>
+                    <span className="ml-2.5 text-xs  font-bold bg-blue-500/80 px-2 py-1 rounded-full">
+                      coming soon
+                    </span>
+                  </span>
                 </li>
               </ul>
             </CardContent>
-            <CardFooter className="px-6 pb-6 pt-4">
+            <CardFooter className="pb-1 pt-2">
               <Button className="w-full cursor-pointer bg-white text-black hover:bg-gray-200">
-                Subscribe Now
-                <span className="ml-1 text-lg">→</span>{" "}
+                Coming soon..
+                {/* <span className="ml-1 text-lg">→</span>{" "} */}
               </Button>
             </CardFooter>
-          </Card> */}
+          </Card>
         </div>
       </div>
     </div>

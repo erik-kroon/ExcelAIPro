@@ -1,0 +1,19 @@
+User-Agent: *
+Allow: /
+Allow: /blog
+Allow: /faq
+Allow: /terms
+Allow: /privacy
+Disallow: /dashboard
+Disallow: /chat
+Disallow: /formulas
+Disallow: /scripts
+Disallow: /sql
+Disallow: /regex
+Disallow: /template
+Disallow: /settings/*
+Disallow: /error
+Disallow: /404
+Disallow: /500
+
+Sitemap: https://www.excelaipro.com/sitemap.xml

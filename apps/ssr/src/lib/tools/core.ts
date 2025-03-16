@@ -1,14 +1,10 @@
 import { tool, type Tool } from "ai";
-import { parse as csvParse } from "csv-parse";
-import { Readable } from "stream";
-import { v4 as uuidv4 } from "uuid"; // Import UUID library
 import { z } from "zod";
 
 export type CoreTools =
   | "assignColumn"
   | "useMappedColumn"
   | "analyzeColumnDataType"
-  | "loadCSVFile"
   | "summarizeData"
   | "parseSchema";
 
@@ -92,95 +88,6 @@ export const coreTools = (
         }
 
         return { result: userColumnName };
-      },
-    }),
-
-    loadCSVFile: tool({
-      description:
-        "Loads a CSV file provided by the user and parses it into a usable data structure using CsvParser. Stores the data server-side and returns a file identifier.",
-      parameters: z.object({
-        fileContent: z.string().describe("Raw CSV content as a string"),
-        delimiter: z
-          .string()
-          .optional()
-          .default(",")
-          .describe('Delimiter used in the CSV (e.g., ",", ";")'),
-        header: z
-          .boolean()
-          .optional()
-          .default(true)
-          .describe("Whether the first row contains headers. Defaults to true."),
-        fileName: z.string().optional().describe("Original name of the file."),
-      }),
-      execute: async ({ fileContent, delimiter, header, fileName }) => {
-        try {
-          const parsedData: DataRow[] = [];
-          const fileId = fileName || uuidv4(); // Generate a unique file identifier using UUID
-
-          const csvStream = Readable.from(fileContent).pipe(
-            csvParse({
-              delimiter: delimiter || ",",
-              columns: header,
-              skipEmptyLines: true,
-              trim: true,
-            }),
-          );
-
-          return new Promise((resolve, reject) => {
-            let headers: string[] | null = null;
-
-            csvStream.on("headers", (headerList: string[]) => {
-              headers = headerList;
-            });
-
-            csvStream.on("data", (row: DataRow) => {
-              parsedData.push(row);
-            });
-
-            csvStream.on("end", () => {
-              // Ensure all rows have the same keys
-              if (headers) {
-                parsedData.forEach((row) => {
-                  headers!.forEach((header) => {
-                    if (!(header in row)) {
-                      row[header] = null; // Or undefined, depending on your preference
-                    }
-                  });
-                });
-              }
-
-              // Store the parsed data in the data store
-              dataStore[fileId] = parsedData;
-
-              //Update data in memory
-              if (data) {
-                data.length = 0;
-                data.push(...parsedData);
-              }
-
-              // Store the fileId in memory for later use
-              if (memory) {
-                memory.fileId = fileId;
-              }
-
-              resolve({
-                result: `Successfully loaded ${parsedData.length} rows from CSV using CsvParser. File ID: ${fileId}`,
-                fileId: fileId, // Return the fileId
-                headers: headers,
-                data: parsedData, //Also return the data
-              });
-            });
-
-            csvStream.on("error", (error: Error) => {
-              delete dataStore[fileId];
-              reject(error);
-            });
-          });
-        } catch (error) {
-          return {
-            error: `Failed to parse CSV with CsvParser: ${error instanceof Error ? error.message : "Unknown error"}`,
-          };
-        }
       },
     }),
 

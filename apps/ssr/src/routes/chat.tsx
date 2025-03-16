@@ -1,12 +1,12 @@
 import { useChat } from "@ai-sdk/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { isValid, parse } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import { FileSpreadsheet, FileText, Paperclip, Send, User, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { Markdown } from "~/lib/components/markdown";
+import { TextFilePreview } from "~/lib/components/text-file-preview";
 import { Avatar, AvatarFallback } from "~/lib/components/ui/avatar";
 import { Button } from "~/lib/components/ui/button";
 import { Card, CardFooter } from "~/lib/components/ui/card";
@@ -21,6 +21,12 @@ export const Route = createFileRoute("/chat")({
 
 function RouteComponent() {
   return <ChatUI />;
+}
+
+interface Attachment {
+  name: string;
+  contentType: string;
+  url: string;
 }
 
 export function ChatUI() {
@@ -107,63 +113,16 @@ export function ChatUI() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let attachments: Attachment[] = [];
-    const attachmentSchemas: { [key: string]: ColumnSchema[] } = {};
 
     if (attachedFiles.length > 0) {
       try {
-        // Process each file: convert .xlsx to .csv, keep .csv as-is
-        const processedFiles = await Promise.all(
-          attachedFiles.map(async (file) => {
-            let csvFile: File;
-
-            if (file.name.toLowerCase().endsWith(".xlsx")) {
-              // Read the .xlsx file as an ArrayBuffer
-              const arrayBuffer = await file.arrayBuffer();
-              const workbook = XLSX.read(arrayBuffer, { type: "array" });
-              const firstSheetName = workbook.SheetNames[0];
-              const worksheet = workbook.Sheets[firstSheetName];
-              const csvString = XLSX.utils.sheet_to_csv(worksheet);
-
-              // Create a new File object with the CSV content
-              csvFile = new File(
-                [csvString],
-                file.name.replace(/\.xlsx$/i, "-xlsx.csv"),
-                {
-                  type: "text/csv",
-                },
-              );
-
-              try {
-                const schema = await generateSchema(file); // Generate schema for XLS
-                attachmentSchemas[csvFile.name] = schema; // Store the schema with csvFile.name
-              } catch (schemaError) {
-                console.error("Error generating schema for XLSX:", schemaError);
-                toast.error("Failed to generate schema for XLSX");
-                return csvFile; // Keep csvFile instead of file
-              }
-            } else {
-              // Return .csv files as-is
-              csvFile = file;
-              try {
-                // const schema = await generateSchema(file); // Generate schema for csv
-                // attachmentSchemas[csvFile.name] = schema; // Store the schema with csvFile.name
-              } catch (schemaError) {
-                console.error("Error generating schema for csv:", schemaError);
-                toast.error("Failed to generate schema for csv");
-                return csvFile; // keep csvFile instead of file
-              }
-            }
-            return csvFile;
-          }),
-        );
-
         // Generate data URLs for the processed files
         const dataUrls = await Promise.all(
-          processedFiles.map((file) => fileToDataUrl(file)),
+          attachedFiles.map((file) => fileToDataUrl(file)),
         );
 
         // Create attachments with the processed files
-        attachments = processedFiles.map((file, index) => ({
+        attachments = attachedFiles.map((file, index) => ({
           name: file.name,
           contentType: file.type,
           url: dataUrls[index],
@@ -175,13 +134,14 @@ export function ChatUI() {
       }
     }
 
-    // Submit to the API with the processed attachments and schemas
-    // console.log(attachmentSchemas);
-    originalHandleSubmit(e, {
-      allowEmptySubmit: true,
-      experimental_attachments: attachments,
-      body: { schema: attachmentSchemas },
-    });
+    {
+      const submitOptions: Parameters<typeof originalHandleSubmit>[1] = {
+        allowEmptySubmit: true,
+        experimental_attachments: attachments,
+      };
+
+      originalHandleSubmit(e, submitOptions);
+    }
     setAttachedFiles([]);
     inputRef.current?.focus();
   };
@@ -266,24 +226,19 @@ export function ChatUI() {
                         <Markdown>{message.content}</Markdown>
                       </div>
                       {message.experimental_attachments?.map((attachment) => {
-                        const isXlsxCsv = attachment?.name
-                          ?.toLowerCase()
-                          .endsWith("-xlsx.csv");
-                        const fileName = isXlsxCsv
-                          ? attachment?.name?.replace(/-xlsx\.csv$/i, ".xlsx")
-                          : attachment.name;
-                        const fileIconColor = isXlsxCsv
-                          ? "text-green-400"
-                          : "text-blue-400";
+                        const fileName = attachment.name;
+
+                        const fileIconColor = "text-green-400";
                         return (
                           <div
                             key={attachment.name}
                             className={cn(
                               "mt-4",
+                              "bg-muted/70 p-1.5 text-secondary-foreground px-2 rounded-md cursor-pointer hover:bg-muted/90",
                               message.content.trim() === "" ? "mt-0" : "",
                             )}
                           >
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 pr-0.5">
                               <FileText className={`h-4 w-4 ${fileIconColor}`} />
                               <span className="text-xs">{fileName}</span>
                             </div>
@@ -393,150 +348,3 @@ export function ChatUI() {
     </div>
   );
 }
-
-interface ColumnSchema {
-  column: string;
-  dataType: string;
-  columnLetter: string; // Added columnLetter
-}
-
-interface Attachment {
-  name: string;
-  contentType: string;
-  url: string;
-}
-const generateSchema = async (file: File): Promise<ColumnSchema[]> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array" });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const range = XLSX.utils.decode_range(worksheet["!ref"] || "A1");
-        const headerRow = 0; // First row as header
-        const sampleRows = 10; // Sample up to 10 rows
-
-        const schema: ColumnSchema[] = [];
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-          const address = XLSX.utils.encode_cell({ r: headerRow, c: C });
-          const cell = worksheet[address];
-          const columnName = cell ? cell.v : `Column${C + 1}`;
-          const columnLetter = XLSX.utils.encode_col(C);
-
-          let dataType = "string"; // Default type
-
-          // Helper to detect if a cell is a date based on Excel format
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const isDateCell = (cell: any) => {
-            return cell.t === "n" && cell.z && XLSX.SSF.is_date(cell.z);
-          };
-
-          // Collect sample cells for this column
-          const sampleCells = [];
-          for (
-            let r = headerRow + 1;
-            r <= Math.min(headerRow + sampleRows, range.e.r);
-            ++r
-          ) {
-            const cellAddress = XLSX.utils.encode_cell({ r: r, c: C });
-            const sampleCell = worksheet[cellAddress];
-            if (sampleCell) sampleCells.push(sampleCell);
-          }
-
-          // Step 1: Check if most cells are formatted as dates
-          const dateCellCount = sampleCells.filter(isDateCell).length;
-          if (sampleCells.length > 0 && dateCellCount / sampleCells.length > 0.5) {
-            dataType = "date"; // Majority are date-formatted
-          } else {
-            // Step 2: Check formatted strings with isValidDate
-            const formattedValues = sampleCells.map((cell) => cell.w || String(cell.v));
-            if (
-              formattedValues.every(
-                (value) => typeof value === "string" && isValidDate(value),
-              )
-            ) {
-              dataType = "date"; // All formatted values are valid dates
-            } else {
-              // Step 3: Check raw values for numbers or other types
-              const rawValues = sampleCells.map((cell) => cell.v);
-              if (rawValues.every((value) => !isNaN(Number(value)))) {
-                dataType = "number"; // All raw values are numeric
-              } else if (
-                rawValues.every(
-                  (value) =>
-                    typeof value === "boolean" ||
-                    (typeof value === "string" &&
-                      (value.toLowerCase() === "true" ||
-                        value.toLowerCase() === "false")),
-                )
-              ) {
-                dataType = "boolean";
-              }
-            }
-          }
-
-          schema.push({ column: columnName, dataType, columnLetter });
-        }
-        resolve(schema);
-      } catch (error) {
-        reject(error);
-      }
-    };
-    reader.onerror = (error) => reject(error);
-    reader.readAsArrayBuffer(file);
-  });
-};
-// Your provided isValidDate function
-function isValidDate(str: string | null | undefined): boolean {
-  if (!str) return false;
-
-  const formats = [
-    "yyyy-MM-dd",
-    "yyyy-MM-dd HH:mm:ss",
-    "yyyy-MM-dd HH:mm",
-    "yyyy/MM/dd",
-    "yyyy/MM/dd HH:mm:ss",
-    "yyyy/MM/dd HH:mm",
-    "MM-dd-yyyy",
-    "MM-dd-yyyy HH:mm:ss",
-    "MM-dd-yyyy HH:mm",
-    "MM/dd/yyyy",
-    "MM/dd/yyyy HH:mm:ss",
-    "MM/dd/yyyy HH:mm",
-    "dd-MM-yyyy",
-    "dd-MM-yyyy HH:mm:ss",
-    "dd-MM-yyyy HH:mm",
-    "dd/MM/yyyy",
-    "dd/MM/yyyy HH:mm:ss",
-    "dd/MM/yyyy HH:mm",
-    "yyyyMMdd",
-  ];
-
-  return formats.some((format) => {
-    const parsedDate = parse(str, format, new Date());
-    return isValid(parsedDate);
-  });
-}
-
-const TextFilePreview: React.FC<{ file: File }> = ({ file }) => {
-  const [content, setContent] = useState<string>("");
-
-  useEffect(() => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target?.result;
-      setContent(typeof text === "string" ? text.slice(0, 100) : "");
-    };
-    reader.readAsText(file);
-  }, [file]);
-
-  return (
-    <div className="text-xs text-gray-500">
-      {content}
-      {content.length >= 100 && "..."}
-    </div>
-  );
-};

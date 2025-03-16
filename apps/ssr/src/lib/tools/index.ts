@@ -1,13 +1,9 @@
-import { analysisTools } from "./analysis";
-import { coreTools } from "./core";
-import { exportTools } from "./export";
+import { excelFunctions } from "./excel-functionts";
 import { calculatorTools } from "./math";
-import { transformationTools } from "./transformation";
+import { formulaValidationTools } from "./validation";
 
 export const tools = {
+  ...formulaValidationTools({}),
+  ...excelFunctions(),
   ...calculatorTools(),
-  ...coreTools(),
-  ...exportTools(),
-  ...transformationTools(),
-  ...analysisTools(),
 };

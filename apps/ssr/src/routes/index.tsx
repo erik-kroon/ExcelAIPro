@@ -77,18 +77,14 @@ function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col justify-center items-center bg-background text-foreground px-4 pt-20 pb-10">
+    <section className="relative min-h-screen w-full flex flex-col justify-center items-center bg-background text-foreground px-4 pt-18 pb-10">
       {/* Stats pill */}
-      <div className="rounded-full border border-border px-4 py-1 ">
-        <p className="text-center text-sm">
-          {/* <b>1000+</b> formulas generated, so far. */}
-          <b>free</b> right now!
-        </p>
+      <div className="absolute top-20 bg-green-700/70  text-white  text-center text-sm rounded-full border border-muted px-4 py-1 ">
+        currently <b>free!</b>
       </div>
-      <div className="flex w-full justify-between items-center mb-8"></div>
       {/* Main heading */}
-      <div className="max-w-4xl mx-auto text-center mb-8">
-        <h1 className="text-2xl md:text-4xl font-bold mb-4 px-1">
+      <div className="max-w-4xl pt-16 mx-auto text-center">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 px-1">
           <span className="block">AI-Powered</span>
           <span className="bg-gradient-to-r from-teal-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
             Spreadsheet Automation
@@ -102,17 +98,17 @@ function Hero() {
         From generating complex formulas to creating charts and uncovering deep
         insights—streamline your spreadsheets with AI.
       </p> */}
-      <p className="text-sm md:text-xl  text-center max-w-3xl mb-16 text-muted-foreground px-2">
+      <p className="text-md md:text-xl  text-center max-w-3xl  text-muted-foreground px-2 py-2">
         From generating complex formulas to uncovering deep insights—streamline your
         spreadsheets with AI.
       </p>
 
       {/* Users and CTA */}
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-16">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-8">
         <div className="flex flex-col items-center">
           <AvatarRow />
           <p className="text-lg mt-3">
-            <b>5+ </b>happy users
+            <b>250+ </b>happy users
           </p>
         </div>
 
@@ -121,8 +117,10 @@ function Hero() {
             ref={buttonRef}
             className="relative flex border content-center bg-black/20 hover:bg-black/10 transition duration-500 dark:bg-white/20 items-center flex-col gap-10 h-min justify-center overflow-visible p-px decoration-clone w-fit rounded-full"
           >
-            <div className="text-white z-100 bg-black rounded-[inherit] h-14 w-fit px-10 py-0 flex items-center space-x-2 group uppercase text-lg">
-              <span className="text-white ">Get Started</span>
+            <div className="hover:bg-muted/40 text-white z-100 bg-black rounded-[inherit] h-14 w-fit px-10 py-0 flex items-center space-x-2 group uppercase text-lg transition-colors duration-100">
+              <span className="text-white font-bold  hover:decoration-solid hover:decoration-1.5 hover:underline-offset-2">
+                Get Started
+              </span>
             </div>
 
             {/* Animated radial gradient background */}
@@ -162,8 +160,12 @@ function Hero() {
         </div>
       </div>
 
-      <Pricing />
-      <Footer />
+      <div className="pb-16">
+        <Pricing />
+      </div>
+      <div className="">
+        <Footer />
+      </div>
     </section>
   );
 }

@@ -1,17 +1,16 @@
 import type { QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
   HeadContent,
+  Link,
   Outlet,
   Scripts,
+  useNavigate,
 } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
-
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-
-import { Link, useNavigate } from "@tanstack/react-router";
 import { FileSpreadsheet } from "lucide-react";
 import React from "react";
 import authClient from "~/lib/auth-client";
@@ -56,6 +55,47 @@ export const Route = createRootRouteWithContext<{
   }),
   component: RootComponent,
 });
+
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Navbar />
+      <Outlet />
+    </RootDocument>
+  );
+}
+function RootDocument({ children }: { readonly children: React.ReactNode }) {
+  React.useEffect(() => {
+    if (localStorage.theme === "light") {
+      document.documentElement.classList.remove("dark");
+    } else if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    }
+  });
+  return (
+    // suppress since we're updating the "dark" class in a custom script below suppressHydrationWarning
+    <html className="supressHydrationWarnings dark">
+      <head>
+        <HeadContent />
+        <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+      </head>
+      <body>
+        {children}
+        {process.env.NODE_ENV !== "production" && (
+          <>
+            <ReactQueryDevtools buttonPosition="bottom-left" />
+            <TanStackRouterDevtools position="bottom-right" />
+          </>
+        )}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
 
 export const Navbar = () => {
   const { user, queryClient } = Route.useRouteContext();
@@ -105,66 +145,3 @@ export const Navbar = () => {
     </nav>
   );
 };
-
-function RootComponent() {
-  return (
-    <RootDocument>
-      {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
-      <Navbar />
-      <Outlet />
-      {/* </ThemeProvider> */}
-    </RootDocument>
-  );
-}
-function RootDocument({ children }: { readonly children: React.ReactNode }) {
-  // React.useEffect(() => {
-  //   setIsClient(true);
-  // }, []);
-
-  React.useEffect(() => {
-    // if (isClient) {
-    if (localStorage.theme === "light") {
-      document.documentElement.classList.remove("dark");
-    } else if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark");
-    }
-    // }
-  }, []);
-  return (
-    // suppress since we're updating the "dark" class in a custom script below suppressHydrationWarning
-    <html className="dark">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {/* <ScriptOnce>
-          {`
-            if (localStorage.theme === 'light') {
-              document.documentElement.classList.remove('dark')
-            } else if (
-              localStorage.theme === 'dark' ||
-              (!('theme' in localStorage) &&
-                window.matchMedia('(prefers-color-scheme: dark)').matches)
-            ) {
-              document.documentElement.classList.add('dark')
-            }
-          `}
-        </ScriptOnce> */}
-        <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-
-        {children}
-        {process.env.NODE_ENV !== "production" && (
-          <>
-            <ReactQueryDevtools buttonPosition="bottom-left" />
-            <TanStackRouterDevtools position="bottom-right" />
-          </>
-        )}
-        <Scripts />
-      </body>
-    </html>
-  );
-}

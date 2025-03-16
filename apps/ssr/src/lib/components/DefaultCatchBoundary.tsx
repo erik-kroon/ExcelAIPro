@@ -18,7 +18,7 @@ export function DefaultCatchBoundary({ error }: Readonly<ErrorComponentProps>) {
   console.error(error);
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 p-4">
+    <div className="flex mt-64 min-w-0 flex-1 flex-col items-center justify-center gap-6 p-4">
       <ErrorComponent error={error} />
       <div className="flex flex-wrap items-center gap-2">
         <Button
@@ -37,7 +37,7 @@ export function DefaultCatchBoundary({ error }: Readonly<ErrorComponentProps>) {
           <Button asChild variant="secondary">
             <Link
               to="/"
-              onClick={(e) => {
+              onClick={(e: React.FormEvent) => {
                 e.preventDefault();
                 window.history.back();
               }}

@@ -7,4 +7,6 @@ declare global {
   const XLSX: any; // Add this line
 }
 
+declare module "fast-formula-parser";
+
 export {};

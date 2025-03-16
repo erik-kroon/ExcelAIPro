@@ -1,5 +1,4 @@
 import { tool, type Tool } from "ai";
-import * as XLSX from "xlsx";
 import { z } from "zod";
 
 // Define types for memory and data (reused from your code)
@@ -23,7 +22,6 @@ export type AnalysisTools =
   | "validateColumn"
   | "calculateMedianOfColumn"
   | "describeColumn"
-  | "loadXLSXFile"
   | "detectGrowthPatterns"
   | "findOutliers"
   | "generateInsights";
@@ -538,50 +536,7 @@ export const analysisTools = (
         }
       },
     }),
-    loadXLSXFile: tool({
-      description: "Loads data from an XLSX file.",
-      parameters: z.object({
-        file: z.string().describe("The XLSX file to load (base64 encoded string)."),
-        sheetName: z
-          .string()
-          .optional()
-          .describe(
-            "Optional: The name of the sheet to load. Defaults to the first sheet.",
-          ),
-      }),
-      execute: async ({ file, sheetName }) => {
-        try {
-          const workbook = XLSX.read(file, { type: "base64" });
-          const targetSheetName = sheetName || workbook.SheetNames[0];
-          if (!targetSheetName) {
-            return { error: "No sheet found in the XLSX file." };
-          }
 
-          const sheet = workbook.Sheets[targetSheetName];
-          if (!sheet) {
-            return { error: `Sheet "${targetSheetName}" not found in the XLSX file.` };
-          }
-
-          const newData = XLSX.utils.sheet_to_json(sheet);
-
-          if (!Array.isArray(newData)) {
-            console.error("loadXLSXFile: Could not convert XLSX to JSON.");
-            return { error: "Could not convert XLSX to JSON." };
-          }
-          return { result: "XLSX file loaded successfully.", data: newData }; // Return the parsed data
-        } catch (error) {
-          console.error(
-            "loadXLSXFile: An error occurred while loading the XLSX file:",
-            error,
-          );
-          let errorMessage = "An error occurred while loading the XLSX file.";
-          if (error instanceof Error) {
-            errorMessage += ` Details: ${error.message}`;
-          }
-          return { error: errorMessage };
-        }
-      },
-    }),
     detectGrowthPatterns: tool({
       description: "Analyzes a column for growth patterns (e.g., increasing trends).",
       parameters: z.object({
