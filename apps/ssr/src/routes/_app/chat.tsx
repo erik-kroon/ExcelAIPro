@@ -1,4 +1,5 @@
 import { useChat } from "@ai-sdk/react";
+
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { FileSpreadsheet, FileText, Paperclip, Send, User, X } from "lucide-react";
@@ -14,7 +15,7 @@ import { Input } from "~/lib/components/ui/input";
 import { ScrollArea } from "~/lib/components/ui/scroll-area";
 import { cn, fileToDataUrl } from "~/lib/utils";
 
-export const Route = createFileRoute("/chat")({
+export const Route = createFileRoute("/_app/chat")({
   component: RouteComponent,
   ssr: false,
 });
@@ -162,7 +163,7 @@ export function ChatUI() {
   };
 
   return (
-    <div {...getRootProps()} className="relative h-screen">
+    <div {...getRootProps()} className="h-full w-full flex flex-col">
       <input {...getInputProps()} style={{ display: "none" }} />
       <input
         type="file"
@@ -188,15 +189,15 @@ export function ChatUI() {
         )}
       </AnimatePresence>
 
-      <div className="flex items-start justify-center h-full transition-colors duration-200">
-        <Card className="pt-20 w-full min-h-screen max-w-3xl flex flex-col border-0 shadow-none">
-          <ScrollArea className="flex-1 h-full overflow-y-auto">
-            <div className="space-y-6 p-4">
+      <div className="px-6  h-full pt-2 flex  justify-center w-full  transition-colors duration-200">
+        <Card className="w-full max-w-3xl flex flex-col border-0 py-0 shadow-none flex-1">
+          <ScrollArea className="flex-1  overflow-y-auto">
+            <div className="h-full space-y-2">
               {messages.map((message, index) => (
                 <motion.div
                   key={message.id}
                   className={cn(
-                    "flex gap-3 items-start",
+                    "flex gap-3 items-start  ",
                     message.role === "user" ? "justify-end" : "justify-start",
                   )}
                   initial={{ y: 10, opacity: 0 }}
@@ -210,7 +211,7 @@ export function ChatUI() {
                   )}
                   <div
                     className={cn(
-                      "flex flex-col max-w-[80%]",
+                      "flex flex-col max-w-[55%] ",
                       message.role === "user" ? "items-end" : "items-start",
                     )}
                   >
@@ -263,9 +264,9 @@ export function ChatUI() {
                   animate={{ opacity: 1 }}
                 >
                   <Avatar>
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      AI
-                    </AvatarFallback>
+                    <Avatar className="bg-muted rounded-full flex justify-center items-center p-1.5">
+                      <FileSpreadsheet className="text-green-400" />
+                    </Avatar>
                   </Avatar>
                   <div className="bg-gray-200/60 dark:bg-gray-800 rounded-2xl px-4 py-3">
                     <p className="text-gray-500">Thinking...</p>
@@ -275,73 +276,79 @@ export function ChatUI() {
               <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
-
-          <CardFooter className="flex-shrink-0 p-4 flex-col items-start space-y-2">
-            <AnimatePresence>
-              {attachedFiles.length > 0 && (
-                <motion.div
-                  className="flex flex-wrap gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {attachedFiles.map((file, index) => (
-                    <motion.div
-                      key={file.name}
-                      className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-xl"
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.8, opacity: 0 }}
-                    >
-                      <FileText className="h-5 w-5 text-green-400" />
-                      <div className="flex-1">
-                        <span className="text">{file.name}</span>
-                        {file.name.toLowerCase().endsWith(".csv") && (
-                          <TextFilePreview file={file} />
-                        )}
-                      </div>
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => removeFile(index)}
-                        className="h-6 w-6"
+          <CardFooter className="mt-0">
+            <div className="flex-col w-full items-start ">
+              <AnimatePresence>
+                {attachedFiles.length > 0 && (
+                  <motion.div
+                    className="flex flex-wrap gap-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    {attachedFiles.map((file, index) => (
+                      <motion.div
+                        key={file.name}
+                        className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-xl"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
                       >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <form onSubmit={handleSubmit} className="flex w-full gap-4 items-center">
-              <Button
-                type="button"
-                size="icon"
-                onClick={() => fileInputRef.current?.click()}
-                className="rounded-full h-10 w-10 shrink-0"
-                disabled={attachedFiles.length >= MAX_FILES}
+                        <FileText className="h-5 w-5 text-green-400" />
+                        <div className="flex-1">
+                          <span className="text">{file.name}</span>
+                          {file.name.toLowerCase().endsWith(".csv") && (
+                            <TextFilePreview file={file} />
+                          )}
+                        </div>
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => removeFile(index)}
+                          className="h-6 w-6"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <form
+                onSubmit={handleSubmit}
+                className="flex w-full gap-6 pb-6  items-center"
               >
-                <Paperclip className="h-4 w-4" />
-              </Button>
-              <Input
-                ref={inputRef}
-                value={input}
-                onChange={handleInputChange}
-                onPaste={handlePaste}
-                placeholder="Type your message..."
-                className="flex-1 border-1 text-start h-14 shadow-none"
-                disabled={isChatLoading}
-              />
-              <Button
-                type="submit"
-                size="icon"
-                disabled={isChatLoading || (!input.trim() && attachedFiles.length === 0)}
-                className="rounded-full h-10 w-10 shrink-0"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </form>
+                <Button
+                  type="button"
+                  size="icon"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded-full h-10 w-10 shrink-0"
+                  disabled={attachedFiles.length >= MAX_FILES}
+                >
+                  <Paperclip className="h-4 w-4" />
+                </Button>
+                <Input
+                  ref={inputRef}
+                  value={input}
+                  onChange={handleInputChange}
+                  onPaste={handlePaste}
+                  placeholder="Type your message..."
+                  className="border-1 text-start h-14 shadow-none"
+                  disabled={isChatLoading}
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={
+                    isChatLoading || (!input.trim() && attachedFiles.length === 0)
+                  }
+                  className="rounded-full h-10 w-10 shrink-0"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </form>
+            </div>
           </CardFooter>
         </Card>
       </div>

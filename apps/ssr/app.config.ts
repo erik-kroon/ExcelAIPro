@@ -1,6 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "@tanstack/react-start/config";
-import million from "million/compiler";
 import { dirname, resolve } from "path";
 import { sitemapPlugin } from "tanstack-start-sitemap";
 import { fileURLToPath } from "url";
@@ -10,6 +9,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
+        "~": resolve(__dirname, "./src"),
         "@": resolve(__dirname, "./src/lib"),
       },
     },
@@ -17,30 +17,26 @@ export default defineConfig({
       sitemapPlugin({
         hostname: "https://www.excelaipro.com",
         defaultChangefreq: "daily",
-        routes: {
-          "/chat": {
-            changefreq: "daily",
-            priority: 0.0,
-          },
-        },
+
         defaultPriority: 0.7,
         routeTreePath: resolve(__dirname, "./src/routeTree.gen.ts"),
       }),
 
-      million.vite({
-        auto: true,
-        rsc: false,
-        // server: true,
-        // hmr: true,
-        // mode: "react",
-        log: "info",
-        filter: {
-          exclude: [
-            /src\/lib\/components\/pricing\.tsx/,
-            /src\/lib\/components\/footer\.tsx/,
-          ],
-        },
-      }),
+      // million.vite({
+      //   auto: true,
+      //   rsc: false,
+      //   // server: true,
+      //   // hmr: true,
+      //   // mode: "react",
+      //   log: "info",
+      //   filter: {
+      //     exclude: [
+      //       /src\/lib\/components\/pricing\.tsx/,
+      //       /src\/lib\/components\/footer\.tsx/,
+      //       /src\/lib\/components\/sidebar\.tsx/,
+      //     ],
+      //   },
+      // }),
       // MillionLint.vite({ experimental: { stabilize: true } }),
       tsConfigPaths({
         projects: ["./tsconfig.json"],

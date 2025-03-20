@@ -11,218 +11,294 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as TermsImport } from './routes/terms'
-import { Route as SignupImport } from './routes/signup'
-import { Route as PrivacyImport } from './routes/privacy'
-import { Route as LoginImport } from './routes/login'
-import { Route as FaqImport } from './routes/faq'
-import { Route as ChatImport } from './routes/chat'
-import { Route as BlogImport } from './routes/blog'
-import { Route as IndexImport } from './routes/index'
+import { Route as PagesImport } from './routes/_pages'
+import { Route as AppImport } from './routes/_app'
+import { Route as PagesIndexImport } from './routes/_pages/index'
+import { Route as PagesTermsImport } from './routes/_pages/terms'
+import { Route as PagesSignupImport } from './routes/_pages/signup'
+import { Route as PagesPrivacyImport } from './routes/_pages/privacy'
+import { Route as PagesLoginImport } from './routes/_pages/login'
+import { Route as PagesFaqImport } from './routes/_pages/faq'
+import { Route as PagesBlogImport } from './routes/_pages/blog'
+import { Route as AppFormulasImport } from './routes/_app/formulas'
+import { Route as AppChatImport } from './routes/_app/chat'
 
 // Create/Update Routes
 
-const TermsRoute = TermsImport.update({
-  id: '/terms',
-  path: '/terms',
+const PagesRoute = PagesImport.update({
+  id: '/_pages',
   getParentRoute: () => rootRoute,
 } as any)
 
-const SignupRoute = SignupImport.update({
-  id: '/signup',
-  path: '/signup',
+const AppRoute = AppImport.update({
+  id: '/_app',
   getParentRoute: () => rootRoute,
 } as any)
 
-const PrivacyRoute = PrivacyImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const FaqRoute = FaqImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ChatRoute = ChatImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const BlogRoute = BlogImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IndexRoute = IndexImport.update({
+const PagesIndexRoute = PagesIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => PagesRoute,
+} as any)
+
+const PagesTermsRoute = PagesTermsImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => PagesRoute,
+} as any)
+
+const PagesSignupRoute = PagesSignupImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => PagesRoute,
+} as any)
+
+const PagesPrivacyRoute = PagesPrivacyImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => PagesRoute,
+} as any)
+
+const PagesLoginRoute = PagesLoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => PagesRoute,
+} as any)
+
+const PagesFaqRoute = PagesFaqImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => PagesRoute,
+} as any)
+
+const PagesBlogRoute = PagesBlogImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => PagesRoute,
+} as any)
+
+const AppFormulasRoute = AppFormulasImport.update({
+  id: '/formulas',
+  path: '/formulas',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppChatRoute = AppChatImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AppRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppImport
       parentRoute: typeof rootRoute
     }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogImport
+    '/_pages': {
+      id: '/_pages'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PagesImport
       parentRoute: typeof rootRoute
     }
-    '/chat': {
-      id: '/chat'
+    '/_app/chat': {
+      id: '/_app/chat'
       path: '/chat'
       fullPath: '/chat'
-      preLoaderRoute: typeof ChatImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AppChatImport
+      parentRoute: typeof AppImport
     }
-    '/faq': {
-      id: '/faq'
+    '/_app/formulas': {
+      id: '/_app/formulas'
+      path: '/formulas'
+      fullPath: '/formulas'
+      preLoaderRoute: typeof AppFormulasImport
+      parentRoute: typeof AppImport
+    }
+    '/_pages/blog': {
+      id: '/_pages/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof PagesBlogImport
+      parentRoute: typeof PagesImport
+    }
+    '/_pages/faq': {
+      id: '/_pages/faq'
       path: '/faq'
       fullPath: '/faq'
-      preLoaderRoute: typeof FaqImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PagesFaqImport
+      parentRoute: typeof PagesImport
     }
-    '/login': {
-      id: '/login'
+    '/_pages/login': {
+      id: '/_pages/login'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PagesLoginImport
+      parentRoute: typeof PagesImport
     }
-    '/privacy': {
-      id: '/privacy'
+    '/_pages/privacy': {
+      id: '/_pages/privacy'
       path: '/privacy'
       fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PagesPrivacyImport
+      parentRoute: typeof PagesImport
     }
-    '/signup': {
-      id: '/signup'
+    '/_pages/signup': {
+      id: '/_pages/signup'
       path: '/signup'
       fullPath: '/signup'
-      preLoaderRoute: typeof SignupImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PagesSignupImport
+      parentRoute: typeof PagesImport
     }
-    '/terms': {
-      id: '/terms'
+    '/_pages/terms': {
+      id: '/_pages/terms'
       path: '/terms'
       fullPath: '/terms'
-      preLoaderRoute: typeof TermsImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof PagesTermsImport
+      parentRoute: typeof PagesImport
+    }
+    '/_pages/': {
+      id: '/_pages/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof PagesIndexImport
+      parentRoute: typeof PagesImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AppRouteChildren {
+  AppChatRoute: typeof AppChatRoute
+  AppFormulasRoute: typeof AppFormulasRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppChatRoute: AppChatRoute,
+  AppFormulasRoute: AppFormulasRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+interface PagesRouteChildren {
+  PagesBlogRoute: typeof PagesBlogRoute
+  PagesFaqRoute: typeof PagesFaqRoute
+  PagesLoginRoute: typeof PagesLoginRoute
+  PagesPrivacyRoute: typeof PagesPrivacyRoute
+  PagesSignupRoute: typeof PagesSignupRoute
+  PagesTermsRoute: typeof PagesTermsRoute
+  PagesIndexRoute: typeof PagesIndexRoute
+}
+
+const PagesRouteChildren: PagesRouteChildren = {
+  PagesBlogRoute: PagesBlogRoute,
+  PagesFaqRoute: PagesFaqRoute,
+  PagesLoginRoute: PagesLoginRoute,
+  PagesPrivacyRoute: PagesPrivacyRoute,
+  PagesSignupRoute: PagesSignupRoute,
+  PagesTermsRoute: PagesTermsRoute,
+  PagesIndexRoute: PagesIndexRoute,
+}
+
+const PagesRouteWithChildren = PagesRoute._addFileChildren(PagesRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/blog': typeof BlogRoute
-  '/chat': typeof ChatRoute
-  '/faq': typeof FaqRoute
-  '/login': typeof LoginRoute
-  '/privacy': typeof PrivacyRoute
-  '/signup': typeof SignupRoute
-  '/terms': typeof TermsRoute
+  '': typeof PagesRouteWithChildren
+  '/chat': typeof AppChatRoute
+  '/formulas': typeof AppFormulasRoute
+  '/blog': typeof PagesBlogRoute
+  '/faq': typeof PagesFaqRoute
+  '/login': typeof PagesLoginRoute
+  '/privacy': typeof PagesPrivacyRoute
+  '/signup': typeof PagesSignupRoute
+  '/terms': typeof PagesTermsRoute
+  '/': typeof PagesIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/blog': typeof BlogRoute
-  '/chat': typeof ChatRoute
-  '/faq': typeof FaqRoute
-  '/login': typeof LoginRoute
-  '/privacy': typeof PrivacyRoute
-  '/signup': typeof SignupRoute
-  '/terms': typeof TermsRoute
+  '': typeof AppRouteWithChildren
+  '/chat': typeof AppChatRoute
+  '/formulas': typeof AppFormulasRoute
+  '/blog': typeof PagesBlogRoute
+  '/faq': typeof PagesFaqRoute
+  '/login': typeof PagesLoginRoute
+  '/privacy': typeof PagesPrivacyRoute
+  '/signup': typeof PagesSignupRoute
+  '/terms': typeof PagesTermsRoute
+  '/': typeof PagesIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/blog': typeof BlogRoute
-  '/chat': typeof ChatRoute
-  '/faq': typeof FaqRoute
-  '/login': typeof LoginRoute
-  '/privacy': typeof PrivacyRoute
-  '/signup': typeof SignupRoute
-  '/terms': typeof TermsRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_pages': typeof PagesRouteWithChildren
+  '/_app/chat': typeof AppChatRoute
+  '/_app/formulas': typeof AppFormulasRoute
+  '/_pages/blog': typeof PagesBlogRoute
+  '/_pages/faq': typeof PagesFaqRoute
+  '/_pages/login': typeof PagesLoginRoute
+  '/_pages/privacy': typeof PagesPrivacyRoute
+  '/_pages/signup': typeof PagesSignupRoute
+  '/_pages/terms': typeof PagesTermsRoute
+  '/_pages/': typeof PagesIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/blog'
+    | ''
     | '/chat'
+    | '/formulas'
+    | '/blog'
     | '/faq'
     | '/login'
     | '/privacy'
     | '/signup'
     | '/terms'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
-    | '/blog'
+    | ''
     | '/chat'
+    | '/formulas'
+    | '/blog'
     | '/faq'
     | '/login'
     | '/privacy'
     | '/signup'
     | '/terms'
+    | '/'
   id:
     | '__root__'
-    | '/'
-    | '/blog'
-    | '/chat'
-    | '/faq'
-    | '/login'
-    | '/privacy'
-    | '/signup'
-    | '/terms'
+    | '/_app'
+    | '/_pages'
+    | '/_app/chat'
+    | '/_app/formulas'
+    | '/_pages/blog'
+    | '/_pages/faq'
+    | '/_pages/login'
+    | '/_pages/privacy'
+    | '/_pages/signup'
+    | '/_pages/terms'
+    | '/_pages/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  BlogRoute: typeof BlogRoute
-  ChatRoute: typeof ChatRoute
-  FaqRoute: typeof FaqRoute
-  LoginRoute: typeof LoginRoute
-  PrivacyRoute: typeof PrivacyRoute
-  SignupRoute: typeof SignupRoute
-  TermsRoute: typeof TermsRoute
+  AppRoute: typeof AppRouteWithChildren
+  PagesRoute: typeof PagesRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  BlogRoute: BlogRoute,
-  ChatRoute: ChatRoute,
-  FaqRoute: FaqRoute,
-  LoginRoute: LoginRoute,
-  PrivacyRoute: PrivacyRoute,
-  SignupRoute: SignupRoute,
-  TermsRoute: TermsRoute,
+  AppRoute: AppRouteWithChildren,
+  PagesRoute: PagesRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -235,39 +311,64 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/blog",
-        "/chat",
-        "/faq",
-        "/login",
-        "/privacy",
-        "/signup",
-        "/terms"
+        "/_app",
+        "/_pages"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_app": {
+      "filePath": "_app.tsx",
+      "children": [
+        "/_app/chat",
+        "/_app/formulas"
+      ]
     },
-    "/blog": {
-      "filePath": "blog.tsx"
+    "/_pages": {
+      "filePath": "_pages.tsx",
+      "children": [
+        "/_pages/blog",
+        "/_pages/faq",
+        "/_pages/login",
+        "/_pages/privacy",
+        "/_pages/signup",
+        "/_pages/terms",
+        "/_pages/"
+      ]
     },
-    "/chat": {
-      "filePath": "chat.tsx"
+    "/_app/chat": {
+      "filePath": "_app/chat.tsx",
+      "parent": "/_app"
     },
-    "/faq": {
-      "filePath": "faq.tsx"
+    "/_app/formulas": {
+      "filePath": "_app/formulas.tsx",
+      "parent": "/_app"
     },
-    "/login": {
-      "filePath": "login.tsx"
+    "/_pages/blog": {
+      "filePath": "_pages/blog.tsx",
+      "parent": "/_pages"
     },
-    "/privacy": {
-      "filePath": "privacy.tsx"
+    "/_pages/faq": {
+      "filePath": "_pages/faq.tsx",
+      "parent": "/_pages"
     },
-    "/signup": {
-      "filePath": "signup.tsx"
+    "/_pages/login": {
+      "filePath": "_pages/login.tsx",
+      "parent": "/_pages"
     },
-    "/terms": {
-      "filePath": "terms.tsx"
+    "/_pages/privacy": {
+      "filePath": "_pages/privacy.tsx",
+      "parent": "/_pages"
+    },
+    "/_pages/signup": {
+      "filePath": "_pages/signup.tsx",
+      "parent": "/_pages"
+    },
+    "/_pages/terms": {
+      "filePath": "_pages/terms.tsx",
+      "parent": "/_pages"
+    },
+    "/_pages/": {
+      "filePath": "_pages/index.tsx",
+      "parent": "/_pages"
     }
   }
 }

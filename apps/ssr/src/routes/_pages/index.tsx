@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import AvatarRow from "~/lib/components/avatar-row";
 import { Footer } from "~/lib/components/footer";
 import { Pricing } from "~/lib/components/pricing";
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_pages/")({
   component: Hero,
   loader: ({ context }) => {
     return { user: context.user };
@@ -15,7 +15,7 @@ function Hero() {
   const buttonRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
 
-  const { user } = Route.useLoaderData();
+  // const { user } = Route.useLoaderData();
 
   useEffect(() => {
     if (!buttonRef.current || !gradientRef.current) return;
@@ -111,8 +111,8 @@ function Hero() {
             <b>250+ </b>happy users
           </p>
         </div>
-
-        <Link to={user ? `/chat` : `/login`}>
+        <Link to="/formulas">
+          {/* <Link to={user ? `/chat` : `/login`}> */}
           <div
             ref={buttonRef}
             className="relative flex border content-center bg-black/20 hover:bg-black/10 transition duration-500 dark:bg-white/20 items-center flex-col gap-10 h-min justify-center overflow-visible p-px decoration-clone w-fit rounded-full"

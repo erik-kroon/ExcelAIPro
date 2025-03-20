@@ -4,13 +4,11 @@ Allow: /blog
 Allow: /faq
 Allow: /terms
 Allow: /privacy
-Disallow: /dashboard
 Disallow: /chat
 Disallow: /formulas
 Disallow: /scripts
 Disallow: /sql
 Disallow: /regex
-Disallow: /template
 Disallow: /settings/*
 Disallow: /error
 Disallow: /404

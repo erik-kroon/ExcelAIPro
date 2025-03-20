@@ -209,6 +209,15 @@ export const APIRoute = createAPIFileRoute("/api/chat/$")({
         maxTokens: 1024,
         tools: tools,
         messages: coreMessages,
+        onStepFinish({ text, toolCalls, toolResults, finishReason, usage }) {
+          console.log("Step finished:", {
+            text,
+            toolCalls,
+            toolResults,
+            finishReason,
+            usage,
+          });
+        },
         onError: (error) => {
           // console.log(error);
           if (error && typeof error === "object" && "data" in error) {

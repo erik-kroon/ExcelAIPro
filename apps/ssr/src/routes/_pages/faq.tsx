@@ -9,7 +9,7 @@ interface FAQItem {
   answer: string;
 }
 
-export const Route = createFileRoute("/faq")({
+export const Route = createFileRoute("/_pages/faq")({
   component: FAQSection,
 });
 
