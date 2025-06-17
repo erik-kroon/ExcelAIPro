@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { memo } from "react";
-import { AppSidebar } from "./sidebar/nav-sidebar";
-import { Button } from "./ui/button";
-import { SidebarProvider } from "./ui/sidebar";
+import { AppSidebar } from "../sidebar/nav-sidebar";
+import { Button } from "../ui/button";
+import { SidebarProvider } from "../ui/sidebar";
 
 const NotFoundComponent = () => {
   return (
@@ -13,8 +13,8 @@ const NotFoundComponent = () => {
           404
         </h1>
         <p>The page you are looking for does not exist.</p>
-        <p className="flex flex-wrap items-center ">
-          <Button type="button" onClick={() => window.history.back()}>
+        <p className="flex flex-wrap items-center  gap-8">
+          <Button className="" type="button" onClick={() => window.history.back()}>
             Go back
           </Button>
           <Button asChild variant="secondary">

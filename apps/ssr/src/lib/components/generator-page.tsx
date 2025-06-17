@@ -21,7 +21,7 @@ import { cn } from "../utils";
 export function FormulaGenerator() {
   const [prompt, setPrompt] = useState("");
   const [formula, setFormula] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
+  // const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [selectedApp, setSelectedApp] = useState("excel");
 
@@ -29,7 +29,7 @@ export function FormulaGenerator() {
     e.preventDefault();
     if (!prompt.trim()) return;
 
-    setIsGenerating(true);
+    // setIsGenerating(true);
     try {
       // const result = await generateFormula(prompt);
       //
@@ -37,7 +37,7 @@ export function FormulaGenerator() {
     } catch (error) {
       console.error("Failed to generate formula:", error);
     } finally {
-      setIsGenerating(false);
+      // setIsGenerating(false);
     }
   };
 

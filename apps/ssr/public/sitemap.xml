@@ -1,50 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.excelaipro.com/</loc>
-    <lastmod>2025-03-16</lastmod>
+    <loc>https://www.excelaipro.com/_app</loc>
+    <lastmod>2025-03-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.excelaipro.com/blog</loc>
-    <lastmod>2025-03-16</lastmod>
+    <loc>https://www.excelaipro.com/_pages</loc>
+    <lastmod>2025-03-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.excelaipro.com/faq</loc>
-    <lastmod>2025-03-16</lastmod>
+    <loc>https://www.excelaipro.com/_app/chat</loc>
+    <lastmod>2025-03-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.excelaipro.com/login</loc>
-    <lastmod>2025-03-16</lastmod>
+    <loc>https://www.excelaipro.com/_app/formulas</loc>
+    <lastmod>2025-03-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.excelaipro.com/privacy</loc>
-    <lastmod>2025-03-16</lastmod>
+    <loc>https://www.excelaipro.com/_pages/blog</loc>
+    <lastmod>2025-03-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.excelaipro.com/signup</loc>
-    <lastmod>2025-03-16</lastmod>
+    <loc>https://www.excelaipro.com/_pages/faq</loc>
+    <lastmod>2025-03-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.excelaipro.com/terms</loc>
-    <lastmod>2025-03-16</lastmod>
+    <loc>https://www.excelaipro.com/_pages/login</loc>
+    <lastmod>2025-03-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.excelaipro.com/chat</loc>
-    <lastmod>2025-03-16</lastmod>
+    <loc>https://www.excelaipro.com/_pages/privacy</loc>
+    <lastmod>2025-03-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.excelaipro.com/_pages/signup</loc>
+    <lastmod>2025-03-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.excelaipro.com/_pages/terms</loc>
+    <lastmod>2025-03-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.excelaipro.com/_pages</loc>
+    <lastmod>2025-03-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>

@@ -6,10 +6,10 @@ import {
   useMatch,
   useRouter,
 } from "@tanstack/react-router";
-import { DynamicBreadcrumbs } from "./dynamic-breadcrumbs";
-import { AppSidebar } from "./sidebar/nav-sidebar";
-import { Button } from "./ui/button";
-import { SidebarInset, SidebarProvider } from "./ui/sidebar";
+import { DynamicBreadcrumbs } from "../dynamic-breadcrumbs";
+import { AppSidebar } from "../sidebar/nav-sidebar";
+import { Button } from "../ui/button";
+import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 
 export function DefaultCatchBoundary({ error }: Readonly<ErrorComponentProps>) {
   const router = useRouter();
@@ -28,7 +28,7 @@ export function DefaultCatchBoundary({ error }: Readonly<ErrorComponentProps>) {
           <DynamicBreadcrumbs />
           <div className="flex mt-64 min-w-0 flex-1 flex-col items-center justify-center gap-6 p-4">
             <ErrorComponent error={error} />
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex gap-4 items-center">
               <Button
                 type="button"
                 onClick={() => {
